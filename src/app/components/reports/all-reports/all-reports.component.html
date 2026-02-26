@@ -1,0 +1,205 @@
+<section class="all_sec1">
+
+    <!-- عنوان الصفحة -->
+    <div class="flex justify-between items-center p-4">
+        <div>
+            <h2 class="text-5xl mb-3 font-semibold">التقارير</h2>
+            <p class="text-2xl text-gray-600">{{ today_date }}
+                <span class="text-xl px-2">|</span>
+                {{ today_time }}
+            </p>
+        </div>
+    </div>
+
+
+
+    <div class="min-h-screen bg-gray-50 p-6">
+        <!-- كروت التقارير -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <!-- كشف الرحلة -->
+            <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+                [routerLink]="['/reports/trips-reports', 'trip']">
+                <p class="font-bold text-xl text-start mb-6 cairo-font">كشف الرحلة</p>
+                <div class="text-right flex justify-between gap-2 w-full">
+                    <i class="fa-solid fa-route bg-blue-100 p-4 rounded-2xl text-blue-500 text-3xl"></i>
+                    <span class="font-semibold text-lg self-center">عرض التقرير</span>
+                </div>
+            </div>
+
+            <!-- تركيب الباص -->
+            <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+                [routerLink]="['/reports/trips-reports', 'bus']">
+                <p class="font-bold text-xl text-start mb-6 cairo-font">تركيب الباص</p>
+                <div class="text-right flex justify-between gap-2 w-full">
+                    <i class="fa-solid fa-van-shuttle bg-green-100 p-4 rounded-2xl text-green-600 text-3xl"></i>
+                    <span class="font-semibold text-lg self-center">عرض التقرير</span>
+                </div>
+            </div>
+
+            <!-- المنافست -->
+            <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+                [routerLink]="['/reports/trips-reports', 'manifest']">
+                <p class="font-bold text-xl text-start mb-6 cairo-font">المنافست</p>
+                <div class="text-right flex justify-between gap-2 w-full">
+                    <i class="fa-solid fa-file-contract bg-yellow-100 p-4 rounded-2xl text-yellow-600 text-3xl"></i>
+                    <span class="font-semibold text-lg self-center">عرض التقرير</span>
+                </div>
+            </div>
+
+            <!-- الفاتورة -->
+            <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+                [routerLink]="['/payments/all-payments']">
+                <p class="font-bold text-xl text-start mb-6 cairo-font">الفاتورة</p>
+                <div class="text-right flex justify-between gap-2 w-full">
+                    <i class="fa-solid fa-file-invoice-dollar bg-red-100 p-4 rounded-2xl text-red-500 text-3xl"></i>
+                    <span class="font-semibold text-lg self-center">عرض التقرير</span>
+                </div>
+            </div>
+
+
+            <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+                [routerLink]="['/days-report', 'departure']">
+                <p class="font-bold text-xl text-start mb-6 cairo-font">ذهاب يوم معين</p>
+                <div class="text-right flex justify-between gap-2 w-full">
+                    <i class="fa-solid fa-bus  bg-pink-100 p-4 rounded-2xl text-pink-500 text-3xl"></i>
+                    <span class="font-semibold text-lg self-center">عرض التقرير</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+                [routerLink]="['/days-report', 'return']">
+                <p class="font-bold text-xl text-start mb-6 cairo-font">عودات يوم معين</p>
+                <div class="text-right flex justify-between gap-2 w-full">
+                    <i class="fa-solid fa-van-shuttle  bg-purple-100 p-4 rounded-2xl text-purple-500 text-3xl"></i>
+                    <span class="font-semibold text-lg self-center">عرض التقرير</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+                [routerLink]="['/days-report', 'available']">
+                <p class="font-bold text-xl text-start mb-6 cairo-font">المتاح ليوم معين</p>
+                <div class="text-right flex justify-between gap-2 w-full">
+                    <i class="fa-solid fa-people-group bg-teal-100 p-4 rounded-2xl text-teal-500 text-3xl"></i>
+                    <span class="font-semibold text-lg self-center">عرض التقرير</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+                [routerLink]="['/days-report', 'motabaky']">
+                <p class="font-bold text-xl text-start mb-6 cairo-font">تقرير المتبقي</p>
+                <div class="text-right flex justify-between gap-2 w-full">
+                    <i class="fa-solid fa-money-bills bg-slate-200 p-4 rounded-2xl text-slate-800 text-3xl"></i>
+                    <span class="font-semibold text-lg self-center">عرض التقرير</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+                [routerLink]="['/days-report', 'reserved-rooms']">
+                <p class="font-bold text-xl text-start mb-6 cairo-font">تقرير غرف الفندق</p>
+                <div class="text-right flex justify-between gap-2 w-full">
+                    <i class="fa-solid fa-bed bg-slate-200 p-4 rounded-2xl text-slate-800 text-3xl"></i>
+                    <span class="font-semibold text-lg self-center">عرض التقرير</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول آخر الفواتير -->
+        <!-- <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-center font-semibold text-lg mb-4 text-[#4d4c81]">آخر الفواتير التي تم إصدارها</h3>
+      
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left rtl:text-right">
+              <thead>
+                <tr class="bg-gray-100 text-gray-600">
+                  <th class="px-4 py-3 text-center">#</th>
+                  <th class="px-4 py-3 text-center">رقم الفاتورة</th>
+                  <th class="px-4 py-3 text-center">اسم العميل</th>
+                  <th class="px-4 py-3 text-center">التاريخ</th>
+                  <th class="px-4 py-3 text-center">القيمة</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let invoice of latest_invoices.slice(0, 5); let i = index" class="border-t">
+                  <td class="px-4 py-3 text-center">{{ i + 1 }}</td>
+                  <td class="px-4 py-3 text-center">{{ invoice.invoiceNumber }}</td>
+                  <td class="px-4 py-3 text-center">{{ invoice.clientName }}</td>
+                  <td class="px-4 py-3 text-center">{{ invoice.date | date:'yyyy-MM-dd' }}</td>
+                  <td class="px-4 py-3 text-center text-green-600 font-bold">{{ invoice.amount | currency:'EGP' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      
+          <div class="flex justify-end mt-4">
+            <button class="text-sm text-blue-600 hover:underline" [routerLink]="['/invoices']">
+              عرض كل الفواتير
+            </button>
+          </div>
+        </div> -->
+
+
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h3 class="text-center font-semibold text-xl mb-6 text-[#4d4c81]">
+                آخر الفواتير التي تم إصدارها
+            </h3>
+
+            <div class="overflow-x-auto rounded-xl border border-gray-200">
+                <table class="min-w-full text-sm text-center">
+                    <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+                        <tr>
+                            <th class="px-4 py-3">#</th>
+                            <th class="px-4 py-3">اسم العميل</th>
+                            <th class="px-4 py-3">التاريخ</th>
+                            <th class="px-4 py-3">إجمالي الفاتورة</th>
+                            <th class="px-4 py-3">المدفوع</th>
+                            <th class="px-4 py-3">المتبقي</th>
+                            <th class="px-4 py-3">العمليات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let res of latest_invoices; let i = index" class="border-t hover:bg-gray-50">
+                            <td class="px-4 py-3 font-medium text-gray-700">{{ i + 1 }}</td>
+                            <td class="px-4 py-3 text-gray-800">{{ res.usersFullNames[0] }}</td>
+                            <td class="px-4 py-3 text-gray-600">{{ res.fromDate | date:'yyyy-MM-dd' }}</td>
+                            <td class="px-4 py-3 text-blue-600 font-bold">{{ res.totalInvoice | currency:'SAR' }}</td>
+                            <td class="px-4 py-3 text-green-600 font-bold">{{ res.moneyPaid | currency:'SAR' }}</td>
+                            <td class="px-4 py-3 text-red-600 font-bold">{{ res.remainingMoney | currency:'SAR' }}</td>
+                            <td class="px-4 py-3 space-x-1 space-x-reverse">
+                                <!-- زر التنزيل -->
+                                <button (click)="downloadPdf(res.id)"
+                                    class="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition text-xs font-medium"
+                                    title="تنزيل الفاتورة">
+                                    <i class="fa-solid fa-file-arrow-down"></i>
+                                    تنزيل
+                                </button>
+
+                                <!-- زر الطباعة -->
+                                <button (click)="printPdf(res.id)"
+                                    class="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-600 rounded hover:bg-purple-200 transition text-xs font-medium"
+                                    title="طباعة الفاتورة">
+                                    <i class="fa-solid fa-print"></i>
+                                    طباعة
+                                </button>
+
+                                <!-- زر العرض -->
+                                <button (click)="openInvoice(res.id)"
+                                    class="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition text-xs font-medium"
+                                    title="عرض الفاتورة">
+                                    <i class="fa-solid fa-eye"></i>
+                                    عرض
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- رابط عرض الكل -->
+            <div class="flex justify-end mt-5">
+                <button class="text-sm text-blue-600 hover:text-blue-800 hover:underline transition"
+                    [routerLink]="['/payments/all-payments']">
+                    عرض كل الفواتير →
+                </button>
+            </div>
+        </div>
+
+
+
+    </div>
+</section>

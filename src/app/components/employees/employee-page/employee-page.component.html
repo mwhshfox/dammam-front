@@ -1,0 +1,31 @@
+<section class="all_sec">
+    <div class="flex justify-between items-center">
+        <h4 class="font-bold text-[2.5rem]">الموظفين</h4>
+        <div class="flex gap-3">
+            @if (current_stage == "all") {
+            <button [routerLink]="['./add-new' ]" class="shared_btn_style secondry_btn" title="إضافة موظف">
+                <span><i class="fa-solid fa-plus"></i></span>
+                إضافة موظف
+            </button>
+            <button class="shared_btn_style thirdry_btn" title="تصدير"><span><i
+                        class="fa-solid fa-arrow-up-from-bracket"></i></span>تصدير</button>
+            }
+
+            @else if (current_stage == "add-new" || current_stage == "edit") {
+            <button [routerLink]="['./all-employees']" class="shared_btn_style thirdry_btn" title="إضافة حجز">
+                <span><i class="fa-solid fa-home"></i></span>
+                عرض الكل
+            </button>
+            }
+        </div>
+    </div>
+
+
+    <router-outlet></router-outlet>
+
+
+
+</section>
+
+
+<!-- <app-confirm-popup [onConfirm]="delete_employee" message="هل ترغب في ازالة هذا الموظف نهائياً ؟" [item_name]="current_name" ></app-confirm-popup> -->

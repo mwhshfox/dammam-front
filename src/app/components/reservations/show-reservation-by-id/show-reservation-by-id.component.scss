@@ -1,0 +1,45 @@
+.reservation_form {
+    background-color: #e5e7eb;
+    padding: 20px;
+    border-radius: 12px;
+}
+.user_data,.trip_data {
+    border: 1px solid #bbbcbd;
+    padding: 15px 10px;
+    border-radius: 12px;
+}
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px
+}
+label {
+    color:  #6e739e;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+
+}
+
+h3 {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    span {
+        color: #132b5f;
+    }
+}
+
+h2 {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+}
+
+h5 {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+}
+
+button {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+}
+

@@ -1,0 +1,119 @@
+<div class="all_table relative  overflow-x-auto">
+
+    <div class="max-w-md mx-6 mb-10">
+        <h5 class="font-semibold text-[1.5rem]">تعديل بيانات العميل</h5>
+    </div>
+
+    <div class="w-full text-sm text-left rtl:text-right">
+        <form [formGroup]="clientForm" class="p-4 md:p-5">
+            <div class="grid gap-4 gap-x-10 py-8 px-4 mb-4 grid-cols-2">
+
+                <!-- First Name -->
+                <div class="lg:col-span-1 md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">الاسم الاول</label>
+                    <input type="text" formControlName="firstName" maxlength="20"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل الاسم الاول">
+                    @if (clientForm.get('firstName')?.touched && clientForm.get('firstName')?.invalid) {
+                    @if (clientForm.get('firstName')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">هذا الحقل مطلوب*</span>
+                    }
+                    @if (clientForm.get('firstName')?.errors?.['maxlength']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون الاسم صالحاً</span>
+                    }
+                    }
+                </div>
+
+                <!-- Last Name -->
+                <div class="lg:col-span-1 md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">الاسم الثاني</label>
+                    <input type="text" formControlName="lastName" maxlength="20"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600"
+                        placeholder="ادخل الاسم الثاني">
+                    @if (clientForm.get('lastName')?.touched && clientForm.get('lastName')?.invalid) {
+                    @if (clientForm.get('lastName')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">هذا الحقل مطلوب*</span>
+                    }
+                    @if (clientForm.get('lastName')?.errors?.['maxlength']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون الاسم صالحاً</span>
+                    }
+                    }
+                </div>
+
+                <!-- Nationality -->
+                <div class="lg:col-span-1 md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">الجنسية</label>
+                    <select formControlName="nationality"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600">
+                        <option [ngValue]="null" disabled selected>اختر الجنسية</option>
+                        @for (country of countries; track $index) {
+                        <option [ngValue]="country">{{country| enum :"nationality"}}</option>
+                        }
+                    </select>
+                    @if (clientForm.get('nationality')?.touched && clientForm.get('nationality')?.invalid) {
+                    <span class=" px-2 text-xs text-red-600 mt-1 block">يرجى اختيار الجنسية*</span>
+                    }
+                </div>
+
+                <!-- Nationality ID -->
+                <div class="lg:col-span-1 md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">رقم الهوية</label>
+                    <input type="text" formControlName="nationalityId" maxlength="30"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600"
+                        placeholder="ادخل رقم الهوية">
+                    @if (clientForm.get('nationalityId')?.touched && clientForm.get('nationalityId')?.invalid) {
+                    @if (clientForm.get('nationalityId')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">رقم الهوية مطلوب*</span>
+                    }
+                    @if (clientForm.get('nationalityId')?.errors?.['pattern']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يتكون رقم الهوية صالحاً</span>
+                    }
+                    }
+                </div>
+
+                <!-- Phone Number -->
+                <div class="lg:col-span-1 md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">رقم الجوال</label>
+                    <input type="text" formControlName="phoneNumber" maxlength="10"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600"
+                        placeholder="ادخل رقم الجوال">
+                    @if (clientForm.get('phoneNumber')?.touched && clientForm.get('phoneNumber')?.invalid) {
+                    @if (clientForm.get('phoneNumber')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">رقم الجوال مطلوب*</span>
+                    }
+                    @if (clientForm.get('phoneNumber')?.errors?.['pattern']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يتكون رقم الجوال من 10 أرقام</span>
+                    }
+                    }
+                </div>
+
+                <!-- Gender -->
+                <div class="lg:col-span-1 md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">النوع</label>
+                    <select formControlName="gender"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600">
+                        <option value="null" disabled selected>اختر النوع</option>
+                        <option [ngValue]="1">ذكر</option>
+                        <option [ngValue]="2">أنثى</option>
+                    </select>
+                    @if (clientForm.get('gender')?.touched && clientForm.get('gender')?.invalid) {
+                    <span class=" px-2 text-xs text-red-600 mt-1 block">يرجى اختيار النوع*</span>
+                    }
+                </div>
+
+            </div>
+
+            <button [disabled]="!clientForm.dirty" (click)="submit_form()" type="submit"
+                class="save_changes_btn shared_btn_style secondry_btn" title="حفظ التعديلات">
+                حفظ التعديلات
+                <span><i class="fa-solid fa-check"></i></span>
+            </button>
+
+
+
+
+        </form>
+    </div>
+
+
+</div>

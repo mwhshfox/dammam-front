@@ -1,0 +1,199 @@
+<section class="all_sec">
+    <div class="flex justify-between items-center">
+        <h4 class="font-bold text-[2.5rem] {{isDeletedView ? 'text-red-700' : ''}}">الحجوزات 
+            {{isDeletedView ? 'الملغية' : ''}}
+        </h4>
+        <div class="flex gap-3">
+            <button class="shared_btn_style secondry_btn" title="إضافة حجز" routerLink='/Add-Reservation'><span><i
+                        class="fa-solid fa-plus"></i></span>إضافة حجز</button>
+            <button (click)="exportDataToExcelStyled()" class="shared_btn_style thirdry_btn" title="تصدير"><span><i
+                        class="fa-solid fa-arrow-up-from-bracket"></i></span>تصدير</button>
+            @if(isDeletedView){
+                <button (click)="go_all_reservations()" style="gap: 4px; font-size: 14px;" class="shared_btn_style thirdry_btn" title="جميع الحجوزات">
+                    جميع الحجوزات
+                    <span><i class="fa-solid fa-list"></i></span>    
+                </button>
+            }@else {
+                <button (click)="go_deleted_reservations()" style="gap: 4px; font-size: 14px;" class="shared_btn_style thirdry_btn" title="الحجوزات الملغية">
+                    الحجوزات الملغية
+                    <span><i class="fa-solid fa-trash"></i></span>
+                </button>
+            }
+        </div>
+    </div>
+    <!-- @if(all_reservations.length > 0){ -->
+    <div class="all_table relative overflow-x-auto">
+
+        <form class="  mb-10  w-full" [formGroup]="searchForm" (ngSubmit)="search_reservations()">
+            <!-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only">ابحث هنا ....</label> -->
+            <div class="flex gap-4 items-center  w-full ">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                    </svg>
+                </div>
+                <input type="search" id="default-search" formControlName="invoiceNumber"
+                    class="crud_input block 2xl:w-[230px] xl:w-[200px] p-4 " placeholder="ابحث برقم الحجز ...." />
+
+                <input type="date" id="default-search" formControlName="fromDate"
+                    class="crud_input block 2xl:w-[230px] xl:w-[200px] p-4 " placeholder="ابحث من تاريخ ...." />
+
+                <input type="date" id="default-search" formControlName="toDate"
+                    class="crud_input block 2xl:w-[230px] xl:w-[200px] p-4 " placeholder="ابحث إلى تاريخ ...." />
+
+                <div class=" flex gap-2 items-center ps-3">
+                    <button type="submit" class="text-white  px-3 py-2 thirdry_bg rounded-xl">بحث</button>
+                    @if(search_value || fromDate_search || toDate_search){
+                    <button type="button" (click)="cancel_search()"
+                        class="text-white  px-3 py-2 main_bg rounded-xl">الغاء</button>
+                    }
+                </div>
+
+                <div class="flex items-start ps-1 flex-col">
+                    <label for="search_mode1" class="relative inline-flex items-center cursor-pointer mr-2">
+                        <input type="radio" [checked]="search_mode == 'createdOn'" class="border-2 border-gray-400 me-2"
+                            name="search_mode" id="search_mode1" (change)="search_mode = 'createdOn'">
+                        <span class="ml-3 text-sm font-medium text-gray-900">تاريخ الحجز</span>
+                    </label>
+                    <label for="search_mode2" class="relative inline-flex items-center cursor-pointer mr-2">
+                        <input type="radio" [checked]="search_mode == 'fromdate'" class="border-2 border-gray-400 me-2"
+                            name="search_mode" id="search_mode2" (change)="search_mode = 'fromdate'">
+                        <span class="ml-3 text-sm font-medium text-gray-900">من - الى</span>
+                    </label>
+                </div>
+
+
+            </div>
+            @if(search_value || fromDate_search || toDate_search){
+            <div class="flex justify-start pt-1 text-gray-600 text-sm ">
+                عرض نتائج البحث : {{search_value}}
+                @if(fromDate_search){
+                {{search_mode == 'fromdate' ? 'من' : 'تاريخ الحجز'}}
+
+                ({{fromDate_search}}) }
+
+                @if(toDate_search){
+                - ({{toDate_search}}) }
+
+            </div>
+            }
+        </form>
+
+        <table class="w-full text-sm text-left rtl:text-right">
+            <thead class="crud_head_titles">
+                <tr>
+                    <th scope="col" class="ps-2 py-3">
+                        #
+                    </th>
+                    <!-- @for(title of table_head_titles ; track $index) { -->
+                    <th scope="col" class="px-4 py-3">
+                        رقم الحجز
+                    </th>
+                    <th scope="col" class="px-4 py-3">
+                        تاريخ الحجز
+                    </th>
+                    <th scope="col" class="px-4 py-3">
+                        اسم العميل
+                    </th>
+                    <th scope="col" class="px-4 py-3">
+                       تاريخ الذهاب - تاريخ العودة
+                    </th>
+                    <th scope="col" class="px-4 py-3">
+                        مدفوع
+                    </th>
+                    <th scope="col" class="px-4 py-3">
+                        متبقي
+                    </th>
+
+                    @if(is_admin && !isDeletedView){
+                    <th scope="col" class="px-4 py-3">
+                        قيود
+                    </th>
+                    }
+
+                    <th scope="col" class="px-4 py-3">
+                        اعدادات
+                    </th>
+                    <!-- } -->
+                </tr>
+            </thead>
+            @if(all_reservations.length > 0){
+            <tbody>
+
+                @for(reservation of all_reservations ; track $index) {
+                <tr class="crud_body_data">
+                    <td class="ps-2 py-4  text-gray-500">
+                        ({{$index+1}})
+                    </td>
+                    <td class="px-4 min-w-[100px] py-4 {{isDeletedView ? 'text-red-800' : ''}}">
+                        {{ reservation.invoiceNumber }}
+                    </td>
+                    <td class="px-4 py-4 text-gray-500">
+                        {{ reservation.createdOn | date: 'yyyy-MM-dd - hh:mm' }} {{reservation.createdOn | date: 'a' :
+                        '' : 'ar-EG'}}
+                    </td>
+                    <td class="px-4 py-4">
+                        {{ reservation.usersFullNames?.[0] }}
+                    </td>
+                    <td class="px-4 py-4">
+                        @if(reservation.fromDate){
+                        <span class="crud_body_secondry_color inline-block ">
+                            {{(reservation.fromDate | date: 'MM-dd (EEEE)' : '' : 'ar-EG') || '-'}} </span>
+                        }
+                        @if(reservation.toDate){
+                        <span> <i class=" px-1 fa-solid fa-caret-left"></i> </span>
+                        <span> {{(reservation.toDate | date: 'MM-dd (EEEE)' : '' : 'ar-EG') || '-'}} </span>
+                        }
+                    </td>
+                    <td class="px-4 py-4">
+                        {{reservation.moneyPaid}}
+                    </td>
+                    <td class="px-4 py-4">
+                        {{reservation.remainingMoney}}
+                    </td>
+                    @if(is_admin && !isDeletedView){
+                    <td class="px-0 py-4 text-[12px]">
+                        <div class="flex items-center gap-2">
+                            <button [class.disabled-btn]="reservation.qoyodInvoiceId"
+                                (click)="export_qiod_invoice(reservation.id , reservation.qoyodInvoiceId , $index)"
+                                class="crud_icon thirdry_btn bg-qiod1 text-sm text-white px-2 py-1 rounded-md min-w-[88px] ">
+                                {{reservation.qoyodInvoiceId ? 'ف مسجلة' : 'تصدير فاتورة'}}
+                            </button>
+                            <!-- <button [disabled]="reservation.qoyodPaymentId" (click)="export_qiod_payment(reservation.id , reservation.qoyodPaymentId , $index)"
+                                class="crud_icon thirdry_btn bg-qiod2 text-sm text-white px-2 py-1 rounded-md min-w-[50px] disabled-btn">
+                                {{reservation.qoyodPaymentId ? 'مسجل' : 'سند'}}
+                            </button> -->
+                        </div>
+                    </td>
+                    }
+                    <td class="px-4 py-4">
+                        <div class="flex items-center gap-4">
+                            <span class="crud_icon show_icon_color"
+                                [routerLink]="[isDeletedView ? '/show-deleted-Reservation' : '/show-Reservation', reservation.id]"><i
+                                    class="fa-regular fa-eye"></i></span>
+                            @if(is_admin && !isDeletedView){
+                                <span class="crud_icon edit_icon_color"
+                                    (click)="onEditReservation(reservation)"><i
+                                        class="fa-regular fa-edit"></i></span>
+                            }
+                            @if(!isDeletedView){
+                                <span (click)="onDeleteReservation(reservation)" title="حذف"
+                                    class="crud_icon delete_icon_color"><i class="fa-solid fa-trash"></i></span>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                }
+
+            </tbody>
+            }
+            @else {
+            <div class="no_reservations text-2xl text-gray-600">لا يوجد حجوزات</div>
+            }
+        </table>
+    </div>
+    <!-- } -->
+
+</section>

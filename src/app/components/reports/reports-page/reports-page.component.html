@@ -1,0 +1,108 @@
+<!-- <section class="all_sec">
+    <div class="flex justify-between items-center">
+        <h4 class="font-bold text-[2.5rem]">التقارير</h4>
+        <div class="flex gap-3">
+            @if (current_stage == "all") {
+            <button [routerLink]="['./add-new' ]" class="shared_btn_style secondry_btn" title="إضافة قندق">
+                <span><i class="fa-solid fa-plus"></i></span>
+                إضافة قندق
+            </button>
+            <button class="shared_btn_style thirdry_btn" title="تصدير"><span><i
+                        class="fa-solid fa-arrow-up-from-bracket"></i></span>تصدير</button>
+            }
+
+            @else if (current_stage == "add-new" || current_stage == "edit") {
+            <button [routerLink]="['./all-reports']" class="shared_btn_style thirdry_btn" title="عرض كل التقارير">
+                <span><i class="fa-solid fa-home"></i></span>
+                عرض الكل
+            </button>
+            }
+        </div>
+    </div>
+
+
+
+    <router-outlet></router-outlet>
+
+
+</section> -->
+
+
+
+
+
+
+
+
+    <!-- كروت التقارير -->
+    <!-- <div class="grid grid-cols-2 md:grid-cols-4 gap-4 px-4">
+        <div
+            class="bg-white rounded-2xl shadow p-7 flex flex-col justify-between hover:bg-white hover:shadow-lg transition-all duration-300">
+            <p class="font-bold text-xl text-start mb-8">الفواتير الصادرة</p>
+            <div class="text-right flex justify-between gap-2 w-full">
+                <p class="font-bold text-xl">{{ issued_invoices }}</p>
+                <i class="fa-solid fa-file-invoice bg-blue-100 p-4 rounded-2xl text-blue-600 text-3xl"></i>
+            </div>
+        </div>
+
+        <div
+            class="bg-white rounded-2xl shadow p-7 flex flex-col justify-between hover:bg-white hover:shadow-lg transition-all duration-300">
+            <p class="font-bold text-xl text-start mb-8">الفواتير المدفوعة</p>
+            <div class="text-right flex justify-between gap-2 w-full">
+                <p class="font-bold text-xl">{{ paid_invoices }}</p>
+                <i class="fa-solid fa-money-check-dollar bg-green-100 p-4 rounded-2xl text-green-500 text-3xl"></i>
+            </div>
+        </div>
+
+        <div
+            class="bg-white rounded-2xl shadow p-7 flex flex-col justify-between hover:bg-white hover:shadow-lg transition-all duration-300">
+            <p class="font-bold text-xl text-start mb-8">الفواتير غير المدفوعة</p>
+            <div class="text-right flex justify-between gap-2 w-full">
+                <p class="font-bold text-xl">{{ unpaid_invoices }}</p>
+                <i class="fa-solid fa-circle-exclamation bg-red-100 p-4 rounded-2xl text-red-500 text-3xl"></i>
+            </div>
+        </div>
+
+        <div
+            class="bg-white rounded-2xl shadow p-7 flex flex-col justify-between hover:bg-white hover:shadow-lg transition-all duration-300">
+            <p class="font-bold text-xl text-start mb-8">التقارير اليوم</p>
+            <div class="text-right flex justify-between gap-2 w-full">
+                <p class="font-bold text-xl">{{ today_reports }}</p>
+                <i class="fa-solid fa-chart-pie bg-purple-100 p-4 rounded-2xl text-purple-600 text-3xl"></i>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- جدول الفواتير الأخيرة -->
+    <!-- <div class="p-4">
+        <div class="bg-white rounded-2xl shadow p-6">
+            <h3 class="text-center font-semibold text-lg mb-4 text-[#4d4c81]">أحدث الفواتير التي تم إصدارها</h3>
+            <div class="flex justify-center">
+                <table class="w-full text-sm text-left rtl:text-right">
+                    <tbody>
+                        @for (invoice of recent_invoices.slice(0, 3); track $index) {
+                        <tr class="crud_body_data border-t">
+                            <td class="px-2 py-4 text-center">{{$index + 1}}</td>
+                            <td class="px-2 py-4 text-center">رقم الفاتورة: {{ invoice.number }}</td>
+                            <td class="px-2 py-4 text-center">المبلغ: {{ invoice.amount | currency:'EGP' }}</td>
+                            <td class="px-2 py-4 text-center">الحالة:
+                                <span [ngClass]="{
+                    'text-green-500': invoice.status === 'مدفوعة',
+                    'text-red-500': invoice.status === 'غير مدفوعة'
+                  }">{{ invoice.status }}</span>
+                            </td>
+                            <td class="px-2 py-4 text-center">{{ invoice.date | date }}</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> -->
+
+    <router-outlet> </router-outlet>
+
+
+
+
+

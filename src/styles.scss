@@ -1,0 +1,368 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+body {
+    font-family: "Rubik", sans-serif;
+    background-color: #F7FAFC;
+
+}
+
+// variables
+
+// colors variables
+$main_color: #6A0808;
+$secondry_color: #B50D0D;
+$thirdry_color: #231F33;
+// border variables
+$main_border_radius: 12px;
+// text variables
+$main_text_color: #B50D0D;
+$secondry_text_color: #B50D0D;
+$thirdry_text_color: #B50D0D;
+// crud text colors
+$head_text_color: #B5B7C0;
+$body_main_text_color: #231F33;
+$body_secondry_text_color: #9C9C9C;
+// crud icons colors
+$show_icon_color: #231F33;
+$edit_icon_color: #037A51;
+$delete_icon_color: #F21515;
+// crud inputs
+$crud_input_bg: #F9F9F9;
+$crud_input_bg: #F9F9F9;
+$crud_input_color: #878CBD;
+
+
+/////////////////////////////////////////////////////// colors
+.main_color {
+    color: $main_color;
+}
+
+.secondry_color {
+    color: $secondry_color;
+}
+
+.thirdry_color {
+    color: $thirdry_color;
+}
+
+.main_bg {
+    background-color: $main_color;
+    color: white;
+}
+
+
+.thirdry_bg {
+    background-color: $thirdry_color;
+    color: white;
+}
+
+
+/////////////////////////////////////////////////////// buttons
+.shared_btn_style {
+    border-radius: $main_border_radius;
+    width: 162px;
+    height: 54px;
+    color: white;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8125rem;
+}
+
+.secondry_btn {
+    background-color: $secondry_color;
+    transition: all .2s;
+
+    &:hover {
+        background-color: #aa0909;
+        box-shadow: 5px 5px 10px rgba(255, 0, 0, 0.281);
+    }
+}
+
+.thirdry_btn {
+    background-color: $thirdry_color;
+    transition: all .2s;
+
+    &:hover {
+        background-color: #0f0d1a;
+        box-shadow: 5px 5px 10px #1000755e;
+    }
+}
+
+.save_changes_btn:disabled {
+    background-color: #797979;
+    box-shadow: none;
+}
+
+.choose_btn {
+    background-color: #6b96b5;
+    color: white;
+    border-radius: $main_border_radius;
+    padding: 0.5rem 1rem;
+}
+
+.show_more_btn {
+    width: 300px;
+    background: linear-gradient(to left, #231f33b9, #b50d0d96);
+}
+
+///////////////////////////////////////////////////////  crud table
+
+.all_sec {
+    background-color: #F7FAFC;
+    padding: 1.5rem;
+    border-radius: $main_border_radius;
+}
+
+.all_table {
+    background-color: #ffffff;
+    box-shadow: 0px 4px 20px 0px #EEEEEE80;
+    border-radius: 20px;
+    padding: 2rem 1rem;
+    padding: 2rem 1rem;
+    margin: 2rem 0;
+}
+
+
+.crud_head_titles {
+    color: $head_text_color;
+    font-weight: 400;
+    font-size: 1rem;
+}
+
+.crud_body_data {
+    color: $body_main_text_color;
+    font-weight: 400;
+    font-size: 0.9375rem;
+}
+
+.crud_body_secondry_color {
+    color: $body_secondry_text_color;
+}
+
+.crud_icon {
+    i {
+        transition: scale .1s;
+        font-size: 1.2rem;
+        cursor: pointer;
+
+        &:hover {
+            scale: 1.2;
+        }
+    }
+
+}
+
+.cursor-not-allowed {
+    cursor: not-allowed !important;
+
+    &:hover {
+        scale: 1 !important;
+    }
+}
+
+.show_icon_color {
+    color: $show_icon_color;
+}
+
+.edit_icon_color {
+    color: $edit_icon_color;
+}
+
+.delete_icon_color {
+    color: $delete_icon_color;
+}
+
+.crud_input {
+    background-color: $crud_input_bg;
+    border: none;
+    border-radius: 12px;
+    color: $crud_input_color;
+}
+
+
+.nav_input {
+    background-color: white;
+    border: $head_text_color 1px solid;
+    border-radius: 12px;
+    color: $crud_input_color;
+}
+
+////////////////////////////////////////////////////////// alerts
+.danger_alert {
+    width: 450px;
+    background-color: #f16f6f;
+    padding: 0.5rem;
+    border-radius: 12px;
+    color: #ffffff;
+}
+
+/////////////////////////////////////////////////////////// buses
+.bus_bathroom {
+    width: 61px;
+    margin: 0 2px;
+    display: flex;
+    align-items: flex-end;
+    border: 2px solid #cd9595;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.bus_door,
+.bus_fridge {
+    writing-mode: sideways-lr;
+    text-orientation: mixed;
+    border: 2px solid #c3bebe;
+    border-radius: 10px;
+    padding: 4px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // height: 110px;
+    width: 61px;
+    margin: 0 2px;
+    line-height: 1.2;
+    color: #8f8f8f;
+}
+
+
+.select_seat {
+    background-color: #518f3ce0;
+    border-radius: 12px;
+}
+
+.seat {
+    button {
+        // background-color: tomato;
+        width: 65px !important;
+        position: relative;
+
+        img {
+            width: 65px !important;
+        }
+
+
+        .seat_id {
+            // width: 65px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: black;
+            font-size: 16px;
+            font-weight: 500;
+        }
+    }
+}
+
+/////////////////////////////////////////////////////////// buses media queries ///////////////////////////////////////////////////////////
+@media screen and (max-width: 1400px) {
+    .seat {
+        button {
+            // background-color: tomato;
+            width: 55px !important;
+
+            img {
+                width: 55px !important;
+            }
+
+            .seat_id {
+                font-size: 14px !important;
+            }
+        }
+    }
+
+
+
+    .bus_bathroom {
+        width: 51px !important;
+    }
+
+    .bus_door,
+    .bus_fridge {
+        font-size: 14px !important;
+        width: 51px !important;
+    }
+
+}
+
+@media screen and (max-width: 1200px) {
+    .seat {
+        button {
+            // background-color: tomato;
+            width: 45px !important;
+
+            img {
+                width: 45px !important;
+            }
+
+            .seat_id {
+                font-size: 14px !important;
+            }
+        }
+    }
+
+
+
+    .bus_bathroom {
+        width: 41px !important;
+    }
+
+    .bus_door,
+    .bus_fridge {
+        font-size: 12px !important;
+        width: 41px !important;
+    }
+
+}
+
+
+/////////////////////////////////////////////////////////// trips ///////////////////////////////////////////////////////////
+.trip_choosed {
+    background-color: #e5e5e5;
+    transition: 0.2s;
+
+    td:last-child {
+        button {
+            background-color: $secondry_color;
+            transition: 0.2s;
+        }
+    }
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+}
+
+.cairo-font {
+    font-family: 'Cairo', sans-serif;
+}
+
+@media print {
+    // .no-print {
+    //     display: none !important;
+    // }
+    // *{
+    //     padding: 0 !important;
+    //     margin: 0 !important;
+    // }
+    
+}
+
+* {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+}

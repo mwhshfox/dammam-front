@@ -1,0 +1,291 @@
+<div class="bg-gray-50 font-sans">
+    <div class=" mx-auto px-4 py-8 ">
+        <!-- Report Header -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6 cairo-font">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">تقرير الصندوق</h1>
+                    <p class="text-gray-600 mt-1 cursor-pointer">الموظف : <span class="font-medium">{{user_name ||
+                            'الكل'}}</span></p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <div class="">
+                        <select name="dateRange" id="dateRange" (change)="updateDateRange()" [(ngModel)]="selectedRange"
+                            class="px-3 py-1 border w-28 text-start border-gray-300 rounded-full  shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="0" disabled>اختر المدة</option>
+                            <option value="today">اليوم</option>
+                            <option value="yesterday">الامس</option>
+                            <option value="3">اخر 3 أيام</option>
+                            <option value="7">اخر 7 أيام</option>
+                            <option value="currentMonth">الشهر الحالي</option>
+                            <option value="custom">مخصص</option>
+                        </select>
+                        <div class="inline-flex items-center bg-blue-50 rounded-full px-4 py-2 cursor-pointer mx-1 hover:bg-blue-100 transition-colors"
+                            (click)="openCustomDatePicker()">
+                            <span class="text-sm font-medium text-blue-800">{{searchDate}}</span>
+                            <i class="fas fa-calendar-alt text-blue-500 mr-2"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-green-50 rounded-lg p-4"
+                    title="اجمالي المدفوعات يشمل كل ما تم تحصيله (فواتير - دفعات) كاش او تحويل او شبكات او خصم">
+                    <p class="text-sm text-green-600 font-medium">اجمالي المدفوعات - {{paymentFilter === 0 ? 'الكل' :
+                        paymentFilter | enum: 'PaymentMethod'}}</p>
+                    <p class="text-2xl font-bold text-green-800 mt-1 flex items-center gap-2">
+                        {{TotalPaid}}
+                        <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
+                            width="20" height="20" fill="currentColor" viewBox="0 0 1124.14 1256.39">
+                            <path
+                                d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                            <path
+                                d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                        </svg>
+                    </p>
+                </div>
+                <!-- <div class="bg-purple-50 rounded-lg p-4"
+                    title="المتبقي يشمل كل ما لم يتم تحصيله بأي طريقة سواء كانت كاش او تحويل او شبكات او خصم">
+                    <p class="text-sm text-purple-600 font-medium">المتبقي - {{paymentFilter === 0 ? 'الكل' :
+                        paymentFilter | enum: 'PaymentMethod'}}</p>
+                    <p class="text-2xl font-bold text-purple-800 mt-1 flex items-center gap-2">
+                        {{Remaining}}
+                        <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
+                            width="20" height="20" fill="currentColor" viewBox="0 0 1124.14 1256.39">
+                            <path
+                                d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                            <path
+                                d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                        </svg>
+                    </p>
+                </div> -->
+                <div class="bg-yellow-50 rounded-lg p-4"
+                    title="عدد العمليات يشمل كل العمليات (فواتير - دفعات) سواء كانت أجلة ام تم تحصيلها">
+                    <p class="text-sm text-yellow-600 font-medium">عدد العمليات - {{paymentFilter === 0 ? 'الكل' :
+                        paymentFilter | enum: 'PaymentMethod'}}</p>
+                    <p class="text-2xl font-bold text-yellow-800 mt-1">{{Transactions}}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="relative w-full sm:w-64">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input id="searchInput" type="text" [(ngModel)]="searchTerm" (ngModelChange)="filterTransactions()"
+                        placeholder="ابحث برقم الفاتورة..."
+                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400">
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="relative">
+                        <select id="employeeFilter" [(ngModel)]="selectedEmployeeId" (ngModelChange)="onEmployeeChange()"
+                            class="w-48 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option [ngValue]="null">كل الموظفين</option>
+                            <option *ngFor="let emp of all_employees" [ngValue]="emp.id">{{emp.fullName}}</option>
+                        </select>
+                    </div>
+                    <div class="relative">
+                        <select id="paymentFilter" [(ngModel)]="paymentFilter" (ngModelChange)="filterTransactions()"
+                            class="w-32 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option [ngValue]="0">جميع الطرق</option>
+                            <option [ngValue]="1">كاش</option>
+                            <option [ngValue]="2">تحويل</option>
+                            <option [ngValue]="3">شبكة</option>
+                            <option [ngValue]="4">خصم</option>
+                        </select>
+                        <!-- <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <i class="fas fa-chevron-down"></i>
+                        </div> -->
+                    </div>
+                    <button (click)="exportTransactionsToExcel()"
+                        class="inline-flex items-center gap-2 bg-gradient-to-r  from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold px-5 py-2.5 rounded-md shadow-md hover:shadow-lg transition-all duration-200">
+                        <span>تصدير </span>
+                        <!-- <i class="fas fa-file-export text-white text-sm"></i> -->
+                        <i class="fa-solid fa-file-excel text-white text-sm"></i>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction List -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <!-- Desktop Table (hidden on mobile) -->
+            <div class="hidden md:block">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    رقم الفاتورة</th>
+
+                                <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    الموظف</th>
+
+                                <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    تاريخ الحجز</th>
+
+
+                                <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    المصدر</th>
+                                <!-- <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    المبلغ</th> -->
+                                <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    المبلغ المدفوع</th>
+                                <!-- <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    المتبقي</th> -->
+                                <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    طريقة الدفع</th>
+
+                                <!-- <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    العمليات</th> -->
+                            </tr>
+
+                        </thead>
+                        <!-- Transactions will be inserted here by JavaScript -->
+                        <tbody class="bg-white divide-y divide-gray-200">
+
+                            <tr *ngFor="let transaction of filteredTransactions; let i = index"
+                                [ngClass]="{'bg-white': i % 2 === 0, 'bg-gray-50': i % 2 !== 0}" class="fade-in"
+                                [style.animation-delay]="i * 50 + 'ms'">
+                                <!-- Invoice Number -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
+                                    {{ transaction.reservationInvoiceNumber }}
+                                </td>
+
+                                <!-- Employee -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
+                                    {{ getEmployeeName(transaction.employeeId) }}
+                                </td>
+
+                                <!-- Date -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
+                                    {{ transaction.date | date: 'dd/MM/yyyy - hh:mm' }} {{transaction.date | date: 'a' :
+                                    '' : 'ar-EG'}}
+                                </td>
+
+                                <!-- Source -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                        [ngClass]="getSourceClass('Initial Payment')">
+                                        {{ transaction.source === 'Initial Payment' ? 'فاتورة حجز' : 'سداد دفعة' }}
+                                        <i class="fas {{ getSourceIcon('Initial Payment') }} mr-1"></i>
+                                    </span>
+                                </td>
+
+                                <!-- Total Invoice -->
+                                <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
+                                    {{ transaction.source == 'Initial Payment' ? formatCurrency(transaction.totalInvoice) : '-' }}
+                                </td> -->
+
+                                <!-- Paid Amount -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-800 font-medium"
+                                    >
+                                    <!-- [ngClass]="getPaymentStatusClass(transaction)" -->
+                                    {{ formatCurrency(transaction.paidAmount) }}
+                                </td>
+
+                                <!-- Remaining Money -->
+                                <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-right"
+                                    [ngClass]="getRemainingBalanceClass(transaction)">
+                                    {{ transaction.source == 'Initial Payment' ?
+                                    formatCurrency(transaction.remainingMoney) : '-' }}
+                                </td> -->
+
+                                <!-- Payment Method -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                        [ngClass]="'bg-' + getPaymentMethodDetails(transaction.paymentMethod).color + '-100 text-' + getPaymentMethodDetails(transaction.paymentMethod).color + '-800'">
+                                        {{ getPaymentMethodDetails(transaction.paymentMethod).name }}
+                                        <i
+                                            class="fas {{ getPaymentMethodDetails(transaction.paymentMethod).icon }} mr-1"></i>
+                                    </span>
+                                </td>
+
+
+
+                                <!-- Actions -->
+                                <!-- <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button class="text-blue-600 hover:text-blue-900 ml-3">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="text-gray-600 hover:text-gray-900">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Mobile Cards (shown on mobile) -->
+            <div id="mobileTransactions" class="md:hidden divide-y divide-gray-200">
+                <!-- Transactions will be inserted here by JavaScript -->
+            </div>
+
+            <!-- Pagination -->
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    <a href="#"
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Previous </a>
+                    <a href="#"
+                        class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Next </a>
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            عرض
+                            <span class="font-medium">{{Transactions}} ({{paymentFilter === 0 ? 'جميع الطرق' :
+                                paymentFilter | enum: 'PaymentMethod'}})</span> من اجمالي
+                            <span class="font-medium">{{transactions.length}}</span> من النتائج
+                        </p>
+                    </div>
+                    <!-- <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            <a href="#"
+                                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Previous</span>
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                            <a href="#" aria-current="page"
+                                class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                1 </a>
+                            <a href="#"
+                                class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                2 </a>
+                            <a href="#"
+                                class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                3 </a>
+                            <a href="#"
+                                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Next</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </nav>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

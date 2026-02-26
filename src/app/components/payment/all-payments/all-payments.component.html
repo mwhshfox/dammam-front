@@ -1,0 +1,109 @@
+<div class="all_table relative overflow-x-auto" *ngIf="filteredReservations.length > 0; else noData">
+
+    <div class="flex items-center justify-between ">
+
+
+        <form class="max-w-lg min-w-[400px] mx-6 mb-10" [formGroup]="searchForm" (ngSubmit)="search_reservations()">
+            <!-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only">ابحث هنا ....</label> -->
+            <div class="relative w-full">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                    </svg>
+                </div>
+                <input type="search" id="default-search" formControlName="invoiceNumber"
+                    class="crud_input block w-full p-4 ps-10" placeholder="ابحث برقم الحجز ...." />
+                <div class="absolute inset-y-0 end-0 flex gap-2 items-center ps-3">
+                    <button type="submit" class="text-white  px-3 py-2 thirdry_bg rounded-xl">بحث</button>
+                    @if(search_value){
+                    <button type="button" (click)="cancel_search()"
+                        class="text-white  px-3 py-2 main_bg rounded-xl">الغاء</button>
+                    }
+                </div>
+            </div>
+            @if(search_value){
+            <div class="flex justify-center pt-1 text-gray-600 text-sm ">
+                عرض نتائج البحث عن : {{search_value}}
+            </div>
+            }
+        </form>
+
+
+        <div class="flex items-start justify-center flex-col gap-4 px-6 pb-5">
+
+            <label class="flex items-center gap-2   px-3 py-2 rounded"
+                [ngClass]="{ 'bg-gray-200': filterOption === 'all' }">
+                <input type="radio" name="filterOption" [(ngModel)]="filterOption" value="all"
+                    (change)="filterReservations()" />
+                <span class="font-medium text-gray-700">عرض جميع المدفوعات</span>
+                @if(show_filter){ <i class="fa-solid fa-hand-point-right fa-beat"></i>}
+            </label>
+
+            <label class="flex items-center gap-2 px-3 py-2 rounded"
+                [ngClass]="{ 'bg-gray-200': filterOption === 'remainingOnly' }">
+                <input type="radio" name="filterOption" [(ngModel)]="filterOption" value="remainingOnly"
+                    (change)="filterReservations()" />
+                <span class="font-medium text-gray-700">عرض المستحق فقط</span>
+                @if(show_filter){ <i class="fa-solid fa-hand-point-right fa-beat"></i>}
+            </label>
+        </div>
+
+    </div>
+
+    <table class="w-full text-sm text-left rtl:text-right">
+        <thead class="crud_head_titles bg-gray-100">
+            <tr>
+                <th scope="col" class="px-2 py-3">
+                    #
+                </th>
+                @for(title of table_head_titles ; track $index) {
+                <th scope="col" class="px-4 py-3">
+                    {{title}}
+                </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for(reservation of filteredReservations ; track $index) {
+            <tr class="crud_body_data cursor-pointer hover:bg-gray-100"
+                [routerLink]="['/payments/show-invoice', reservation.id]">
+                <td class="px-2 py-4">({{$index + 1}})</td>
+                <td class="px-4 py-4">{{ reservation.invoiceNumber }}</td>
+                <td class="px-4 py-4">{{ reservation.usersFullNames?.[0] }}</td>
+                <td class="px-4 py-4">
+                    <div *ngIf="reservation.fromDate">
+                        <span class="text-gray-500">{{ reservation.fromDate | date }}</span>
+                        <i class="px-2 fa-solid fa-caret-left text-gray-400"></i>
+                        <span>{{ reservation.toDate | date }}</span>
+                    </div>
+                </td>
+                <td class="px-4 py-4 text-green-600 font-semibold">{{ reservation.moneyPaid | number:'1.2-2' }} ر.س</td>
+                <td class="px-4 py-4 text-red-600 font-semibold">{{ reservation.remainingMoney | number:'1.2-2' }} ر.س
+                </td>
+                <td class="px-4 py-4">
+                    <button *ngIf="reservation.remainingMoney > 0" type="button"
+                        [routerLink]="['/payments/show-invoice', reservation.id]"
+                        class="inline-flex items-center gap-1 px-3 text-sm py-1 bg-green-200 text-green-600 rounded hover:bg-green-300 transition font-medium"
+                        title="تحصيل دفعة">
+                        تحصيل دفعة
+                        <i class="fa-solid fa-dollar-sign"></i>
+                    </button>
+                    <button *ngIf="reservation.remainingMoney == 0" type=""
+                        class="inline-flex items-center gap-1 px-3 text-sm py-1 bg-blue-900 text-white rounded transition font-medium cursor-default"
+                        title="مدفوع">
+                        مدفوع بالكامل
+                        <i class="fa-solid fa-check"></i>
+                    </button>
+
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<ng-template #noData>
+    <div class="text-xl text-center text-gray-500 py-10">لا يوجد حجوزات لعرضها</div>
+</ng-template>

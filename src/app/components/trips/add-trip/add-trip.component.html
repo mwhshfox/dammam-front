@@ -1,0 +1,537 @@
+<div class="all_table relative  overflow-x-auto">
+
+    <div class="max-w-md mx-6 mb-10">
+        <h5 class="font-semibold text-[1.5rem]">اضافة رحلة جديدة</h5>
+    </div>
+
+    <div class="card-container">
+        <div class="card" [class.selected]="selectedOption === 'makkah'" (click)="selectOption('makkah')">
+            <img src="media\23\maka2.png" alt="Makkah" class="" />
+            <span>مكة</span>
+        </div>
+
+        <div class="card" [class.selected]="selectedOption === 'madinah'" (click)="selectOption('madinah')">
+            <img src="media\23\madina2.png" alt="Madinah" />
+            <span>المدينة</span>
+        </div>
+
+        <div class="card" [class.selected]="selectedOption === 'both'" (click)="selectOption('both')">
+            <img src="media\23\maka_mdaina2.png" alt="Makkah & Madinah" />
+            <span>مكة و المدينة</span>
+        </div>
+    </div>
+    @if(tirp_form.get('fromCity')?.getError('required') && tirp_form.get('fromCity')?.touched) {
+    <span class="px-2 text-xs text-red-600 mt-1 block text-center">يرجى اختيار نوع الرحلة * </span>
+    }
+
+
+    @if(selectedOption) {
+
+    <div class="w-full min-h-[600px] text-sm text-left rtl:text-right">
+        <form [formGroup]="tirp_form" class="p-4 md:p-5">
+            <div class="grid gap-4 gap-x-10 py-8 px-4 mb-4 grid-cols-6">
+
+
+
+
+                <!-- ==============================       عدد الايام       ============================== -->
+                <div
+                    [ngClass]="selectedOption === 'both' ? 'lg:col-span-1 md:col-span-6' : 'lg:col-span-2 md:col-span-6'">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> عدد الأيام</label>
+                    <select formControlName="daysCount"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600">
+                        <option [ngValue]="null" disabled selected>اختر عدد الأيام</option>
+                        <option [ngValue]="3">3 أيام</option>
+                        <option [ngValue]="4">4 أيام</option>
+
+                    </select>
+                    @if (tirp_form.get('daysCount')?.touched && tirp_form.get('daysCount')?.invalid) {
+                    @if (tirp_form.get('daysCount')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block"> اختر عدد الأيام اولاً*</span>
+                    }
+                    @if (tirp_form.get('daysCount')?.errors?.['pattern']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون عدد الأيام صالحاً بحد اقصى 30
+                        يوماً</span>
+                    }
+                    }
+                </div>
+
+
+                <!-- ==============================       starting date       ============================== -->
+                <div
+                    [ngClass]="selectedOption === 'both' ? 'lg:col-span-2 md:col-span-6' : 'lg:col-span-2 md:col-span-6'">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> تاريخ الذهاب</label>
+                    <!-- <input (input)="set_end_date_as_selected()" type="date" formControlName="departureTime"
+                        [min]="minDepartureDate"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل تاريخ الذهاب"> -->
+                    <app-date-picker formControlName="departureTime" [minDate]="minDepartureDate" [defaultwidth]="false"
+                        (dateChange)="set_end_date_as_selected()" [placeholder]="'ادخل تاريخ الذهاب'"></app-date-picker>
+
+                    @if (tirp_form.get('departureTime')?.touched && tirp_form.get('departureTime')?.invalid) {
+                    @if (tirp_form.get('departureTime')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">هذا الحقل مطلوب*</span>
+                    }
+                    @if (tirp_form.get('departureTime')?.errors?.['maxlength']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون الاسم صالحاً بحد اقصى 25 حرف</span>
+                    }
+                    }
+                </div>
+
+
+                @if (selectedOption === 'both') {
+                <!-- ==============================       transit date       ============================== -->
+                <div
+                    [ngClass]="selectedOption === 'both' ? 'relative lg:col-span-1 md:col-span-6' : 'relative lg:col-span-2 md:col-span-6'">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> تاريخ الترانزيت</label>
+                    <input type="date" readonly formControlName="transitLeaveTime" [min]="minReturnDate"
+                        class=" absolute inset-0 opacity-0 z-10 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل تاريخ الترانزيت">
+
+                    <div class="flex items-center justify-between bg-[#F9F9F9] rounded-[12px] px-4 py-2 text-[#878CBD] z-0 pointer-events-none"
+                        style="padding: 0.875rem;">
+                        <span class="truncate">
+                            {{ tirp_form.get('transitLeaveTime')?.value || 'تاريخ الترانزيت' }}
+                        </span>
+                        <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path
+                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                        </svg>
+                    </div>
+                    @if (tirp_form.get('transitLeaveTime')?.touched && tirp_form.get('transitLeaveTime')?.invalid) {
+                    @if (tirp_form.get('transitLeaveTime')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">هذا الحقل مطلوب*</span>
+                    }
+                    @if (tirp_form.get('transitLeaveTime')?.errors?.['maxlength']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون الاسم صالحاً بحد اقصى 25 حرف</span>
+                    }
+                    }
+                </div>
+                }
+
+
+                <!-- ==============================       end date       ============================== -->
+                <div
+                    [ngClass]="selectedOption === 'both' ? 'relative lg:col-span-2 md:col-span-6' : 'relative lg:col-span-2 md:col-span-6'">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> تاريخ العودة</label>
+                    <input type="date" readonly formControlName="returnTime" [min]="minReturnDate"
+                        class="absolute inset-0 opacity-0 z-10  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل تاريخ العودة">
+                    <div class="flex items-center justify-between bg-[#F9F9F9] rounded-[12px] px-4 py-2 text-[#878CBD] z-0 pointer-events-none"
+                        style="padding: 0.875rem;">
+                        <span class="truncate">
+                            {{ tirp_form.get('returnTime')?.value || 'تاريخ العودة' }}
+                        </span>
+                        <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path
+                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                        </svg>
+                    </div>
+                    @if (tirp_form.get('returnTime')?.touched && tirp_form.get('returnTime')?.invalid) {
+                    @if (tirp_form.get('returnTime')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">هذا الحقل مطلوب*</span>
+                    }
+                    @if (tirp_form.get('returnTime')?.errors?.['maxlength']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون الاسم صالحاً بحد اقصى 25 حرف</span>
+                    }
+                    }
+                </div>
+
+
+                @if(tirp_form.get('departureTime')?.value){
+
+
+
+                <!-- ==============================       from city     ============================== -->
+                <div
+                    [ngClass]="selectedOption === 'both' ? 'lg:col-span-2 md:col-span-6' : 'lg:col-span-3 md:col-span-6'">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">نقطة الانطلاق</label>
+                    <!-- <select formControlName="fromCity"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600">
+                        <option [ngValue]="null" disabled selected>نقطة الانطلاق</option>
+                        @for (city of all_city; track $index) {
+                        <option [ngValue]="city">{{city| enum :"city"}}</option>
+                        }
+                    </select> -->
+                    <input type="text" readonly
+                        [value]="tirp_form.get('fromCity')?.value |enum : ( selectedOption === 'both' ? 'double_city' : 'city')"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600">
+                    @if (tirp_form.get('fromCity')?.touched && tirp_form.get('fromCity')?.invalid) {
+                    <span class=" px-2 text-xs text-red-600 mt-1 block">يرجى اختيار المدينة * </span>
+                    }
+                </div>
+
+
+                <!-- ==============================       transit city     ============================== -->
+                @if (selectedOption === 'both') {
+                <div class="lg:col-span-2 md:col-span-6">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">الوجهة الاولى </label>
+                    <!-- <select formControlName="transitCity"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600">
+                        <option [ngValue]="null" disabled selected>اختر رحلة الترانزيت</option>
+                        @for (city of all_city; track $index) {
+                        <option [ngValue]="city">{{city| enum :"city"}}</option>
+                        }
+                    </select> -->
+                    <input type="text" readonly
+                        [value]="tirp_form.get('transitCity')?.value |enum :( selectedOption === 'both' ? 'double_city' : 'city')"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600">
+                    @if (tirp_form.get('transitCity')?.touched && tirp_form.get('transitCity')?.invalid) {
+                    <span class=" px-2 text-xs text-red-600 mt-1 block">يرجى اختيار المدينة * </span>
+                    }
+                </div>
+                }
+
+                <!-- ==============================        to city      ============================== -->
+                <div
+                    [ngClass]="selectedOption === 'both' ? 'lg:col-span-2 md:col-span-6' : 'lg:col-span-3 md:col-span-6'">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{selectedOption ===
+                        'both' ? 'الوجهة الثانية' : 'نقطة الوصول'}} </label>
+                    <!-- <select readonly formControlName="toCity"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600">
+                        <option [ngValue]="null" disabled selected>نقطة الوصول</option>
+                        @for (city of all_city; track $index) {
+                        <option [ngValue]="city">{{city| enum :"city"}}</option>
+                        }
+                    </select> -->
+                    <input type="text" readonly
+                        [value]="tirp_form.get('toCity')?.value |enum : ( selectedOption === 'both' ? 'double_city' : 'city')"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600">
+                    @if (tirp_form.get('toCity')?.touched && tirp_form.get('toCity')?.invalid) {
+                    <span class=" px-2 text-xs text-red-600 mt-1 block">يرجى اختيار المدينة * </span>
+                    }
+                </div>
+
+
+
+
+
+                <!--====================================       bus type        ==============================   -->
+                <div class="lg:col-span-3 md:col-span-6">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">نوع الحافلة </label>
+                    <select (change)="set_trip_code($event)" formControlName="busType"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600">
+                        <option [ngValue]="null" disabled selected>حدد نوع الحافلة</option>
+                        <option [ngValue]="1">عادي-47</option>
+                        <option [ngValue]="2">عادي-49</option>
+                        <option [ngValue]="8">عادي- 49 (2)</option>
+                        <option [ngValue]="3">عادي-51</option>
+                        <option [ngValue]="4">28-VIP</option>
+                        <option [ngValue]="5">28-VIPيسار</option>
+                        <option [ngValue]="6">29-VIPيسار</option>
+                        <option [ngValue]="7">30-VIP</option>
+                    </select>
+                    @if (tirp_form.get('busType')?.touched && tirp_form.get('busType')?.invalid) {
+                    <span class=" px-2 text-xs text-red-600 mt-1 block">يرجى تحديد نوع الحافلة * </span>
+                    }
+                </div>
+
+
+                <!--====================================       chair price       ============================== -->
+                <div class="lg:col-span-3 md:col-span-6">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> السعر الافتراضي
+                        للكرسي</label>
+                    <input type="text" (input)="onPriceInput($event)" formControlName="chairPrice" maxlength="4"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600"
+                        placeholder=" ادخل سعر الكرسي ">
+                    @if (tirp_form.get('chairPrice')?.touched && tirp_form.get('chairPrice')?.invalid) {
+                    @if (tirp_form.get('chairPrice')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">ادخل سعر الكرسي *</span>
+                    }
+                    @if (tirp_form.get('chairPrice')?.errors?.['pattern']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون السعر صالحاً بحد اقصى 4 ارقام</span>
+                    }
+                    }
+                </div>
+
+
+
+
+
+
+                <!-- ==============================       First driver       ============================== -->
+                <div class="lg:col-span-2 md:col-span-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> السائق الاول</label>
+                    <input (blur)="onTrimSpacesInput($event, 'driverName1')" type="text" formControlName="driverName1"
+                        maxlength="20"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل اسم السائق الاول">
+                    @if (tirp_form.get('driverName1')?.touched && tirp_form.get('driverName1')?.invalid) {
+                    @if (tirp_form.get('driverName1')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">هذا الحقل مطلوب*</span>
+                    }
+                    @if (tirp_form.get('driverName1')?.errors?.['maxlength']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون الاسم صالحاً بحد اقصى 25 حرف</span>
+                    }
+                    }
+                </div>
+
+                <!-- ==============================       First driver phone       ============================== -->
+                <div class="lg:col-span-2 md:col-span-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> رقم الهاتف للسائق
+                        الاول</label>
+                    <input (blur)="onTrimSpacesInput($event, 'driverPhoneNumber1')" type="text"
+                        formControlName="driverPhoneNumber1" maxlength="10"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل رقم الهاتف للسائق الاول">
+                    @if (tirp_form.get('driverPhoneNumber1')?.touched && tirp_form.get('driverPhoneNumber1')?.invalid) {
+                    @if (tirp_form.get('driverPhoneNumber1')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">هذا الحقل مطلوب*</span>
+                    }
+                    @if (tirp_form.get('driverPhoneNumber1')?.errors?.['pattern']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون رقم الهاتف صالحاً (10 رقم)</span>
+                    }
+                    }
+                </div>
+
+                <!-- ==============================       First driver national id       ============================== -->
+                <div class="lg:col-span-2 md:col-span-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> رقم الهوية للسائق
+                        الاول</label>
+                    <input (blur)="onTrimSpacesInput($event, 'driverNationalId1')" type="text"
+                        formControlName="driverNationalId1" maxlength="10"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل رقم الهوية للسائق الاول">
+                    @if (tirp_form.get('driverNationalId1')?.touched && tirp_form.get('driverNationalId1')?.invalid) {
+                    @if (tirp_form.get('driverNationalId1')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">هذا الحقل مطلوب*</span>
+                    }
+                    @if (tirp_form.get('driverNationalId1')?.errors?.['pattern']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون رقم الهوية صالحاً بحد اقصى 25
+                        حرف</span>
+                    }
+                    }
+                </div>
+
+
+                <!-- ==============================       seconed driver       ============================== -->
+                <div class="lg:col-span-2 md:col-span-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> السائق الثاني</label>
+                    <input (blur)="onTrimSpacesInput($event, 'driverName2')" type="text" formControlName="driverName2"
+                        maxlength="20"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل اسم السائق الثاني">
+                    @if (tirp_form.get('driverName2')?.touched && tirp_form.get('driverName2')?.invalid) {
+                    @if (tirp_form.get('driverName2')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">هذا الحقل مطلوب*</span>
+                    }
+                    @if (tirp_form.get('driverName2')?.errors?.['maxlength']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون الاسم صالحاً بحد اقصى 25 حرف</span>
+                    }
+                    }
+                </div>
+
+                <!-- ==============================       First driver phone       ============================== -->
+                <div class="lg:col-span-2 md:col-span-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> رقم الهاتف للسائق
+                        الثاني</label>
+                    <input (blur)="onTrimSpacesInput($event, 'driverPhoneNumber2')" type="text"
+                        formControlName="driverPhoneNumber2" maxlength="10"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل رقم الهاتف للسائق الثاني">
+                    @if (tirp_form.get('driverPhoneNumber2')?.touched && tirp_form.get('driverPhoneNumber2')?.invalid) {
+                    @if (tirp_form.get('driverPhoneNumber2')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">هذا الحقل مطلوب*</span>
+                    }
+                    @if (tirp_form.get('driverPhoneNumber2')?.errors?.['pattern']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون رقم الهاتف صالحاً (10 رقم)</span>
+                    }
+                    }
+                </div>
+
+                <!-- ==============================       First driver national id       ============================== -->
+                <div class="lg:col-span-2 md:col-span-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> رقم الهوية للسائق
+                        الثاني</label>
+                    <input (blur)="onTrimSpacesInput($event, 'driverNationalId2')" type="text"
+                        formControlName="driverNationalId2" maxlength="10"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل رقم الهوية للسائق الثاني">
+                    @if (tirp_form.get('driverNationalId2')?.touched && tirp_form.get('driverNationalId2')?.invalid) {
+                    @if (tirp_form.get('driverNationalId2')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">هذا الحقل مطلوب*</span>
+                    }
+                    @if (tirp_form.get('driverNationalId2')?.errors?.['pattern']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون رقم الهوية صالحاً بحد اقصى 25
+                        حرف</span>
+                    }
+                    }
+                </div>
+
+
+                <!-- ==============================       plateNumber - ar       ============================== -->
+                <div class="lg:col-span-2 md:col-span-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">لوحة السيارة - أحرف</label>
+                    <input type="text" (input)="onPlateLettersInput($event)" formControlName="plateLetters" maxlength="9"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل حروف لوحة السيارة (اختياري)">
+                    @if (tirp_form.get('plateLetters')?.touched && tirp_form.get('plateLetters')?.invalid) {
+                    @if (tirp_form.get('plateLetters')?.errors?.['maxlength']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">بحد أقصى 5 أحرف</span>
+                    }
+                    @if (tirp_form.get('plateLetters')?.errors?.['pattern']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">الحروف العربية أو الإنجليزية فقط</span>
+                    }
+                    }
+                </div>
+
+
+                <!-- ==============================       plateNumber - nums       ============================== -->
+                <div class="lg:col-span-2 md:col-span-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">لوحة السيارة - أرقام</label>
+                    <input type="text" (input)="onPlateDigitsInput($event)" formControlName="plateDigits" maxlength="5"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل أرقام لوحة السيارة (اختياري)">
+                    @if (tirp_form.get('plateDigits')?.touched && tirp_form.get('plateDigits')?.invalid) {
+                    @if (tirp_form.get('plateDigits')?.errors?.['maxlength']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">بحد أقصى 5 أرقام</span>
+                    }
+                    @if (tirp_form.get('plateDigits')?.errors?.['pattern']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">أرقام فقط</span>
+                    }
+                    }
+                </div>
+
+
+                @if(tirp_form.get('busType')?.value){
+                <!-- ==============================       trip code       ============================== -->
+                <div class="lg:col-span-3 md:col-span-6">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">كود الرحلة</label>
+                    <input (blur)="onTrimSpacesInput($event, 'tripCode')" type="text" formControlName="tripCode"
+                        maxlength="3"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600"
+                        placeholder="ادخل كود للرحلة">
+                    @if (tirp_form.get('tripCode')?.errors?.['outOfRange'] && tirp_form.get('tripCode')?.touched) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">
+                        الكود غير صحيح. أدخل رقم من
+                        {{ selectedOption === 'makkah' && (bus_type <= 3 || bus_type==8) ? '101 إلى 149' :
+                            selectedOption==='makkah' && bus_type>= 4 && bus_type != 8 ? '150 إلى 199' :
+                            selectedOption === 'madinah' && (bus_type <= 3 || bus_type==8) ? '401 إلى 449' :
+                                selectedOption==='madinah' && bus_type>= 4 && bus_type != 8 ? '450 إلى 499' :
+                                selectedOption === 'both' && (bus_type <= 3 || bus_type==8) ? '301 إلى 349' :
+                                    selectedOption==='both' && bus_type>= 4 && bus_type != 8 ? '350 إلى 399' : '' }}
+                    </span>
+                    }
+                    @if (tirp_form.get('tripCode')?.errors?.['invalidTripCode'] && tirp_form.get('tripCode')?.touched) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">
+                        يجب إدخال رقم صالح.
+                    </span>
+                    }
+                </div>
+                }
+
+
+                <div class="hotel_section border  col-span-6  border-gray-300 rounded-lg p-4 mt-3">
+
+                    <h3 class="text-lg font-semibold mb-4">بيانات الفندق</h3>
+
+
+                    <div formArrayName="hotels" class=" ">
+                        @for(hotel of hotelsFormArray.controls; track $index){
+                        <div [formGroupName]="$index" class="grid grid-cols-6 gap-4">
+
+                            <div class="lg:col-span-2 md:col-span-3">
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">الفندق {{
+                                    $index + 1 }}
+                                </label>
+                                <select formControlName="hotelId"
+                                    class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600">
+                                    <option [ngValue]="null" disabled selected>اختر الفندق</option>
+                                    @for(hotel of all_hotels; track $index){
+                                    <option [ngValue]="hotel.id">{{hotel.name}}</option>
+                                    }
+
+                                </select>
+                                @if (hotelsFormArray.at($index).get('hotelId')?.touched &&
+                                hotelsFormArray.at($index).get('hotelId')?.invalid) {
+                                <span class=" px-2 text-xs text-red-600 mt-1 block">يرجى تحديد الفندق * </span>
+                                }
+                            </div>
+                            <!--====================================       room price       ============================== -->
+                            <div class="lg:col-span-2 md:col-span-3">
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> سعر الغرفة
+                                </label>
+                                <input type="text" (input)="onTrimSpacesInput($event, 'roomPrice')"
+                                    formControlName="roomPrice" maxlength="4"
+                                    class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600"
+                                    placeholder=" ادخل سعر الغرفة ">
+                                @if (hotelsFormArray.at($index).get('roomPrice')?.touched &&
+                                hotelsFormArray.at($index).get('roomPrice')?.invalid) {
+                                @if (hotelsFormArray.at($index).get('roomPrice')?.errors?.['required']) {
+                                <span class="px-2 text-xs text-red-600 mt-1 block">ادخل سعر الغرفة *</span>
+                                }
+                                @if (hotelsFormArray.at($index).get('roomPrice')?.errors?.['pattern']) {
+                                <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون السعر صالحاً بحد اقصى 4
+                                    ارقام</span>
+                                }
+                                }
+                            </div>
+                            <!--====================================       bed price       ============================== -->
+                            <div class="lg:col-span-2 md:col-span-3 ">
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> سعر السرير
+                                </label>
+                                <input type="text" (input)="onTrimSpacesInput($event, 'bedPrice')"
+                                    formControlName="bedPrice" maxlength="4"
+                                    class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600"
+                                    placeholder=" ادخل سعر السرير ">
+                                @if (hotelsFormArray.at($index).get('bedPrice')?.touched &&
+                                hotelsFormArray.at($index).get('bedPrice')?.invalid) {
+                                @if (hotelsFormArray.at($index).get('bedPrice')?.errors?.['required']) {
+                                <span class="px-2 text-xs text-red-600 mt-1 block">ادخل سعر السرير *</span>
+                                }
+                                @if (hotelsFormArray.at($index).get('bedPrice')?.errors?.['pattern']) {
+                                <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون السعر صالحاً بحد اقصى 4
+                                    ارقام</span>
+                                }
+                                }
+                            </div>
+
+                        </div>
+                        }
+                        <div class="flex gap-2 my-2 justify-end">
+                            <button [disabled]="hotelsFormArray.length >= 3" type="button"
+                                class="add-hotel-btn bg-sky-800 small text-sm " title="جديد +" (click)="addHotel()">
+                                جديد
+                                <span><i class="fa-solid fa-plus"></i></span>
+                            </button>
+                            <button [disabled]="hotelsFormArray.length <= 1" type="button"
+                                class="add-hotel-btn bg-red-600 small text-sm " title="حذف -" (click)="removeHotel()">
+                                حذف
+                                <span><i class="fa-solid fa-minus"></i></span>
+                            </button>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+                }
+
+
+
+
+            </div>
+            <button (click)="submit_form()" type="submit" class="shared_btn_style secondry_btn" title="إضافة عميل">
+                إضافة
+                <span><i class="fa-solid fa-plus"></i></span>
+            </button>
+
+
+
+
+        </form>
+    </div>
+    }
+
+
+</div>

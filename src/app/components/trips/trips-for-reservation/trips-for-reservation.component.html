@@ -1,0 +1,118 @@
+<section class="all_sec">
+    <div class="flex justify-between items-center">
+        @if(show_trips_type === 'going_trips'){<h4 class="font-bold text-[2.5rem]">رحلات الذهاب</h4>}
+        @else if(show_trips_type === 'return_trips'){<h4 class="font-bold text-[2.5rem]">رحلات العودة</h4>}
+        @else if(show_trips_type === 'transit_trips'){<h4 class="font-bold text-[2.5rem]">رحلات مكة مدينة</h4>}
+        @else {
+        <h4 class="font-bold text-[2.5rem]">الرحلات</h4>
+        }
+    </div>
+
+
+    <div class="all_table relative overflow-x-auto">
+
+        <!-- <form class="max-w-md mx-6 mb-10">
+            <div class="relative">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                    </svg>
+                </div>
+                <input type="search" id="default-search" class="crud_input block w-full p-4 ps-10"
+                    placeholder="ابحث هنا ...." required />
+                <button type="button"
+                    class="text-white absolute end-2.5 bottom-2.5 px-3 py-2 thirdry_bg rounded-xl">بحث</button>
+            </div>
+        </form> -->
+
+        <table class="w-full text-sm text-left rtl:text-right">
+            <thead class="crud_head_titles">
+                <tr>
+                    @for(title of table_head_titles ; track $index) {
+                    <th scope="col" class="px-2 py-3 ">
+                        {{title}}
+                    </th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody>
+                @for(trip of all_trips | slice : 0 : trips_display_count ; track $index) {
+                <tr class="crud_body_data border-t" [class.trip_choosed]="trip.id == selected_trip_id">
+                    <td class="px-2 py-4  ">
+                        {{$index+1}}
+                    </td>
+                    <td class="px-2 py-4">
+                        {{trip.tripCode}}
+                    </td>
+                    <td class="px-2 py-4 ">
+                        <span class=" min-w-28 inline-block font crud_body_secondry_color">
+                            {{trip.fromCity | enum :'city'}} </span>
+
+                        <i class="fa-solid fa-left-long pe-5"></i>
+                        @if(trip.transitCity){
+                        <span>{{trip.transitCity | enum : 'city'}} </span>
+                        <i class="fa-solid fa-location-dot px-1"></i>
+                        }
+                        <span>{{trip.toCity | enum : 'city'}} </span>
+                    </td>
+
+                    <td class="px-2 py-4 ">
+                        @if(reserving && (show_trips_type === 'all' || show_trips_type ===
+                        'going_trips' || show_trips_type === 'transit_trips' )) {
+                        <span class="crud_body_secondry_color inline-block "> {{trip.departureTime | date : 'MM-dd (EEEE)' :"" :"ar-EG"}} </span>
+                        }
+                        @if(reserving && (show_trips_type === 'all' || show_trips_type ===
+                        'return_trips')){
+                        <span> <i class=" px-3 fa-solid fa-caret-left"></i> </span>
+                        <span> {{trip.returnTime | date : 'MM-dd (EEEE)' :"" :"ar-EG"}} </span>
+                        }
+                    </td>
+                    <td class="px-2 py-4">
+
+
+                        @if((show_trips_type === 'all' || show_trips_type === 'going_trips')) {
+                        {{ trip.departureReservedChairs ? (trip.numberOfChairs - trip.departureReservedChairs.split(",").length) : trip.numberOfChairs  }} 
+                        }
+        
+                        @if(trip.fromCity == 2 && (show_trips_type === 'all' || show_trips_type === 'transit_trips')){
+                       | {{ trip.departureReservedChairs ? (trip.numberOfChairs - trip.departureReservedChairs.split(",").length) : trip.numberOfChairs }}
+                        }
+
+                        @if(trip.fromCity == 1 && (show_trips_type === 'all' || show_trips_type === 'transit_trips') && trip.transitCity){
+                       | {{ trip.transitReservedChairs ? (trip.numberOfChairs - trip.transitReservedChairs.split(",").length) : trip.numberOfChairs }}
+                        }
+        
+                        @if((show_trips_type === 'all' || show_trips_type === 'return_trips')) {
+                            | {{ trip.returnReservedChairs ? (trip.numberOfChairs - trip.returnReservedChairs.split(",").length) : trip.numberOfChairs }}
+                        }
+                        
+ 
+
+
+                        <!-- {{ trip.departureReservedChairs ? (trip.numberOfChairs - trip.departureReservedChairs.split(",").length) : trip.numberOfChairs }} -->
+                        @if (trip.busType > 3 && trip.busType != 8) {
+                        <span class="p-1 rounded-md bg-slate-50 border-yellow-500 border" title="VIP">
+                            <i class="fa-solid fa-crown" style="color: #fbc604;"></i>
+                        </span>
+                        }
+                    </td>
+                    <td>
+                        <button class="choose_btn" (click)="select_trip(trip)">اختر</button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if(all_trips.length > trips_display_count){
+    <button #show_more_btn type="button" (click)="show_more_trips(show_more_btn)"
+        class="shared_btn_style show_more_btn mx-auto">
+        <span>عرض المزيد</span>
+    </button>
+    }
+
+</section>

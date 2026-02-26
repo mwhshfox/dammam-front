@@ -1,0 +1,111 @@
+// .select_seat {
+//     background-color: #518f3ce0;
+//     border-radius: 12px;
+// }
+// .seat {
+//     button {
+//         // background-color: tomato;
+//         width: 65px !important;
+//         position: relative;
+
+//         img {
+//             width: 65px !important;
+//         }
+//         .bus_bathroom {
+//             width: 61px;
+//             margin: 0 2px;
+//             display: flex;
+//             align-items: flex-end;
+//             border: 2px solid #cd9595;
+//             border-radius: 10px;
+//             padding: 5px;
+//         }
+
+//         .bus_door , .bus_fridge {
+//             writing-mode: sideways-lr;
+//             text-orientation: mixed;
+//             border: 2px solid #c3bebe;
+//             border-radius: 10px;
+//             padding: 4px;
+//             font-size: 16px;
+//             display: flex;
+//             align-items: center;
+//             justify-content: center;
+//             // height: 110px;
+//             width: 61px;
+//             margin: 0 2px;
+//             line-height: 1.2;
+//             color: #8f8f8f;
+//         }
+
+        
+//         .seat_id {
+//             // width: 65px;
+//             position: absolute;
+//             left: 50%;
+//             top: 50%;
+//             transform: translate(-50% , -50%);
+//             color: black;
+//             font-size: 16px;
+//             font-weight: 500;
+//         }
+//     }
+// }
+
+
+
+
+// /////////////////////////////////////////////////////////// buses
+
+
+// @media screen and (max-width: 1400px) {
+//     .seat {
+//         button {
+//             // background-color: tomato;
+//             width: 55px !important;
+//             position: relative;
+    
+//             img {
+//                 width: 55px !important;
+//             }
+//             .bus_bathroom {
+//                 width: 51px;
+//                 margin: 0 2px;
+//                 display: flex;
+//                 align-items: flex-end;
+//                 border: 2px solid #cd9595;
+//                 border-radius: 10px;
+//                 padding: 5px;
+//             }
+    
+//             .bus_door , .bus_fridge {
+//                 writing-mode: sideways-lr;
+//                 text-orientation: mixed;
+//                 border: 2px solid #c3bebe;
+//                 border-radius: 10px;
+//                 padding: 4px;
+//                 font-size: 16px;
+//                 display: flex;
+//                 align-items: center;
+//                 justify-content: center;
+//                 // height: 110px;
+//                 width: 51px;
+//                 margin: 0 2px;
+//                 line-height: 1.2;
+//                 color: #8f8f8f;
+//             }
+    
+            
+//             .seat_id {
+//                 // width: 65px;
+//                 position: absolute;
+//                 left: 50%;
+//                 top: 50%;
+//                 transform: translate(-50% , -50%);
+//                 color: black;
+//                 font-size: 14px;
+//                 font-weight: 500;
+//             }
+//         }
+//     }
+// }

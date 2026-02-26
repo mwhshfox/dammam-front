@@ -1,0 +1,11 @@
+$main_border_radius: 12px;
+
+.main-radius {
+    border-radius: $main_border_radius;
+}
+
+@media print {
+    :host ::ng-deep {
+        display: none !important;
+    }
+}
