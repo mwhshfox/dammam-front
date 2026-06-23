@@ -1,0 +1,1645 @@
+<div class="w-full">
+  <!-- <div class="header">
+      <h1>🕌 نظام تنظيم التسكين - العمرة</h1>
+      <p>إدارة وتنظيم تسكين الحجاج في الغرف</p>
+    </div>
+  
+    <div class="controls">
+      <button class="btn btn-success" (click)="autoAssignFamily()">
+        <span class="icon">👨‍👩‍👧‍👦</span>
+        توزيع العائلي تلقائياً
+      </button>
+      <button class="btn btn-warning" (click)="autoAssignSingles()">
+        <span class="icon">👤</span>
+        توزيع العزاب تلقائياً
+      </button>
+      <button class="btn btn-danger" (click)="resetAssignment()">
+        <span class="icon">🔄</span>
+        إعادة تعيين الكل
+      </button>
+      <button class="btn btn-info" (click)="generatePDF()">
+        <span class="icon">📄</span>
+        طباعة PDF
+      </button>
+    </div> -->
+
+  <div class="bg-white rounded-lg shadow-md p-6 mb-8 no-print">
+    <div class="flex flex-wrap justify-between items-center gap-4">
+      <div>
+        <button (click)="autoAssignFamily()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">
+          توزيع العائلات تلقائياً
+        </button>
+        <button (click)="autoAssignSingles()"
+          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg mr-2 transition">
+          توزيع العزاب تلقائياً
+        </button>
+        <button (click)="resetAssignment()"
+          class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg mr-2 transition">
+          إعادة تعيين الكل
+        </button>
+        <button (click)="generatePDF()"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg mr-2 transition">
+          تصدير PDF <i class="fa-solid fa-file-pdf"></i>
+        </button>
+
+
+
+      </div>
+      <div>
+        <label class="relative inline-flex items-center cursor-pointer mr-2">
+          <span class="ml-2 text-sm font-medium text-gray-900">وضع الطباعة</span>
+          <input (change)="is_print_mode = !is_print_mode" type="checkbox" value="" class="sr-only peer">
+          <div
+            class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:bg-slate-800 transition-colors duration-200">
+          </div>
+          <div
+            class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform peer-checked:translate-x-5 transition-transform duration-200">
+          </div>
+        </label>
+        <label class="relative inline-flex items-center cursor-pointer mr-2">
+          <span class="ml-2 text-sm font-medium text-gray-900">اظهار الجوال</span>
+          <input (change)="showPhoneNumber = !showPhoneNumber" type="checkbox" value="" class="sr-only peer">
+          <div
+            class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:bg-slate-800 transition-colors duration-200">
+          </div>
+          <div
+            class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform peer-checked:translate-x-5 transition-transform duration-200">
+          </div>
+        </label>
+        <label class="relative inline-flex items-center cursor-pointer mr-2">
+          <span class="ml-2 text-sm font-medium text-gray-900">اظهار التاريخ</span>
+          <input (change)="show_date = !show_date" type="checkbox" value="" class="sr-only peer">
+          <div
+            class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:bg-slate-800 transition-colors duration-200">
+          </div>
+          <div
+            class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform peer-checked:translate-x-5 transition-transform duration-200">
+          </div>
+        </label>
+      </div>
+      <div>
+        <button routerLink="/home"
+          class="bg-black/90 hover:bg-indigo-900 text-white px-4 py-2 rounded-lg flex items-center transition">
+
+          العودة للرئيسية
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5 4v1h10V4H5zm0 12v1h10v-1H5z" clip-rule="evenodd" />
+            <path fill-rule="evenodd" d="M3 6a1 1 0 011-1h12a1 1 0 011 1v8a1 1 0 01-1 1H4a1 1 0 01-1-1V6zm2 0v7h10V6H5z"
+              clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showLoading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+      <div class="flex items-center">
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
+        <span>جاري إنشاء التقرير...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showNotifications" class="fixed bottom-10 left-10 z-50" [ngClass]="{'hidden': is_print_mode}">
+    <div class="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg animate-fade-in-out">
+      {{notificationMessage}}
+    </div>
+  </div>
+
+  <div class="flex gap-4">
+    <!-- Unassigned Clients Section -->
+    <div class="  xl:w-[450px] lg:w-[300px]" [ngClass]="{'hidden': is_print_mode}">
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <h2 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">العملاء غير المسكنين</h2>
+
+
+        <!-- Family Tab -->
+        <div>
+          <h3 class="text-lg font-medium mb-3 text-green-700 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M7 11a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" />
+              <path fill-rule="evenodd"
+                d="M2 9a2 2 0 012-2h12a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V9zm14 0H4v6h12V9z"
+                clip-rule="evenodd" />
+            </svg>
+            <div class="flex items-center justify-between w-full"> العائلات <span class="text-xs text-gray-500 px-2">
+                متبقي {{familyClients.length}} </span> </div>
+          </h3>
+          <div class="unassigned-list space-y-3">
+            <div *ngFor="let client of familyClients; let i = index"
+              class="client-card bg-white border rounded-lg p-3 cursor-pointer hover:shadow-md"
+              [class.ring-2]="isClientSelected(client)" [class.ring-indigo-500]="isClientSelected(client)"
+              (click)="selectClient(client, 'family')">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h4 class="font-medium text-gray-800">{{client.clientName}}</h4>
+                  <div class="text-sm text-gray-600 mt-1">
+                    <span>{{getStayTypeText(client.stayType)}}</span>
+                    <span *ngIf="client.roomIndex" class="mx-2">|</span>
+                    <span *ngIf="client.roomIndex">غرفة - {{client.room_type_num_beds}} س</span>
+                    <!-- <span *ngIf="client.roomIndex">غرفة {{client.roomIndex}} - {{client.bedsCountInRoom}} س</span> -->
+                  </div>
+                </div>
+              </div>
+              <div class="mt-2 text-xs text-gray-500">
+                <div>{{client.fromDate | date:'yyyy/MM/dd'}} - {{client.toDate | date:'yyyy/MM/dd'}}</div>
+              </div>
+            </div>
+            <ng-container *ngIf="familyClients.length === 0">
+              <div class="text-center text-gray-500 mt-4">
+                لا يوجد عائلات غير مسكنين
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <!-- Singles Tab -->
+        <div class="mb-6">
+          <h3 class="text-lg font-medium mb-3 text-blue-700 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+            </svg>
+            <div class="flex items-center justify-between w-full"> العزاب <span class="text-xs text-gray-500 px-2">
+                متبقي {{FilterUnassignedSinglesPipe(singleClients).length}} </span> </div>
+          </h3>
+          <div class="unassigned-list space-y-3">
+            <!-- *ngFor="let client of FilterUnassignedSinglesPipe(singleClients) " -->
+            <div *ngFor="let client of FilterUnassignedSinglesPipe(singleClients); let i = index"
+              class="client-card bg-white border rounded-lg p-3 cursor-pointer hover:shadow-md"
+              [class.ring-2]="isClientSelected(client)" [class.ring-indigo-500]="isClientSelected(client)"
+              (click)="selectClient(client, 'single')">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h4 class="font-medium text-gray-800">{{client.clientName}}</h4>
+                  <div class="text-sm text-gray-600 mt-1">
+                    <span>{{getStayTypeText(client.stayType)}}</span>
+                    <span class="mx-2">|</span>
+                    <span>{{client.totalCount}} أفراد ({{client.remainingCount}} متبقين)</span>
+                  </div>
+                </div>
+                <span
+                  class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{{client.remainingCount}}</span>
+              </div>
+              <div class="mt-2 text-xs text-gray-500">
+                <div>{{client.hotelName}}</div>
+                <div>{{client.fromDate | date:'yyyy/MM/dd'}} - {{client.toDate | date:'yyyy/MM/dd'}}</div>
+              </div>
+            </div>
+            <ng-container *ngIf="FilterUnassignedSinglesPipe(singleClients).length === 0">
+              <div class="text-center text-gray-500 mt-4">
+                لا يوجد عزاب غير مسكنين
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <!-- Rooms Section -->
+    <div class="w-full">
+      <div class="bg-white rounded-lg " [ngClass]="{'p-6': !is_print_mode , 'p-0': is_print_mode}">
+        <div class="flex justify-between items-center mb-6"
+          [ngClass]="{'mb-6': !is_print_mode , 'mb-0': is_print_mode}">
+          <h2 class="text-xl font-semibold text-gray-800">الغرف</h2>
+          <div class="text-sm text-gray-500">
+            <span>{{occupiedRooms}}</span> / <span> {{rooms.length}} </span> غرف مستخدمة
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1  gap-4"
+          [ngClass]="{'grid-cols-4': is_print_mode ,'md:grid-cols-2' :!is_print_mode , 'lg:grid-cols-3' :!is_print_mode , 'xl:grid-cols-4' : !is_print_mode}">
+
+          <div *ngFor="let room of rooms.slice(0, 20); let i = index"
+            class="room print-room bg-white border rounded-lg  cursor-pointer relative"
+            [ngClass]="{'min-h-[120px]': is_print_mode , 'min-h-[140px]': !is_print_mode , 'p-4': !is_print_mode , 'p-0': is_print_mode}"
+            [class.border-blue-200]="room.roomType === 'single'" [class.border-green-200]="room.roomType === 'family'"
+            [class.border-gray-200]="!room.roomType" [class.ring-2]="isRoomHighlighted(room)"
+            [class.ring-indigo-500]="isRoomHighlighted(room)" (click)="assignClientToRoom(room)">
+            <div class="flex justify-between items-center "
+              [ngClass]="{'mb-0': is_print_mode || room.clients.length === 0 , 'mb-3': !is_print_mode }">
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="font-medium">غرفة {{room.number}}</span>
+                <span *ngIf="room.roomType" class="text-xs font-medium ml-2 px-2 py-0.5 rounded-full"
+                  [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                  [class.bg-green-100]="room.roomType === 'family'" [class.text-green-800]="room.roomType === 'family'">
+                  {{room.roomType === 'single' ? 'عزاب' : 'عائلي'}} <span *ngIf="room.roomType === 'family'"> -
+                    {{room.clients[0].room_type_num_beds}}</span>
+                </span>
+
+              </div>
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="text-xs text-gray-500">{{room.clients.length}}/{{room.maxCapacity}}</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="w-full ps-2 py-2" *ngIf="room.clients.length > 0; else emptyRoom">
+                <div *ngFor="let client of room.clients; let clientIndex = index"
+                  class="bg-gray-50 rounded  text-sm relative group"
+                  [ngClass]="{'mb-0 p-0': is_print_mode , 'p-2 mb-2': !is_print_mode}">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-medium">{{client.clientName}}</div>
+                      <div class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': is_print_mode}">
+
+                        <span>
+                          {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                          :'ar')}} </span>
+                        <!-- <span *ngIf="client.numOfRooms > 1" class="mx-1">|</span>
+                        <span *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                      </div>
+                      <!-- <span class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': !is_print_mode}"
+                        *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                    </div>
+                    <button (click)="removeClientFromRoom(i, clientIndex); $event.stopPropagation()"
+                      [ngClass]="{'hidden': is_print_mode}"
+                      class="opacity-0 p-1 group-hover:opacity-100 text-red-500 hover:bg-red-100 hover:text-red-700 transition-opacity">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                    {{client.invoiceNumber}} -
+                    <span *ngIf="client.isFamily">عائلة</span>
+                    <span *ngIf="!client.isFamily">عزاب</span>
+                  </div>
+                  <div *ngIf="showPhoneNumber || show_date"
+                    class="text-[12px] text-gray-500 phone_number flex flex-col">
+                    <span *ngIf="show_date">
+                      {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                      :'ar')}} </span>
+                    <span *ngIf="showPhoneNumber"> {{client.phoneNumber}}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class=" flex flex-col items-start w-fit" [ngClass]="{'hidden': !is_print_mode}">
+                <div class="border border-gray-300 rounded-tl-lg white-box bg-white flex flex-col gap-0">
+                  <span *ngIf="room.clients.length > 0"
+                    class=" font-medium px-2 text-[14px] w-full text-center line-height-normal"
+                    [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                    [class.bg-green-100]="room.roomType === 'family'"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.roomType === 'single' ? 'عزاب'
+                    :'عائلي'}}</span>
+
+                  <span *ngIf="room.roomType === 'family'"
+                    class="text-[14px] font-medium px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.clients[0].room_type_num_beds}} سرير</span>
+                  <!-- <span *ngIf="room.roomType === 'family'" class="text-[14px] font-bold px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'"> </span> -->
+
+                </div>
+
+              </div>
+            </div>
+
+            <ng-template #emptyRoom>
+              <div class="bg-gray-50 rounded p-4 w-full h-full text-center text-sm text-gray-500">
+                فارغة
+                <div *ngIf="selectedClient" class="mt-2 text-xs text-indigo-600">
+                  انقر لإضافة العميل المحدد
+                </div>
+              </div>
+            </ng-template>
+          </div>
+
+
+        </div>
+
+        <div *ngIf="rooms.length > 20" class=" bg-gray-300  my-2 p-4"></div>
+
+
+        <div class="grid grid-cols-1  gap-4"
+          [ngClass]="{'grid-cols-4': is_print_mode ,'md:grid-cols-2' :!is_print_mode , 'lg:grid-cols-3' :!is_print_mode , 'xl:grid-cols-4' : !is_print_mode}">
+
+          <div *ngFor="let room of rooms.slice(20, 40); let i = index"
+            class="room print-room bg-white border rounded-lg  cursor-pointer relative"
+            [ngClass]="{'min-h-[120px]': is_print_mode , 'min-h-[140px]': !is_print_mode , 'p-4': !is_print_mode , 'p-0': is_print_mode}"
+            [class.border-blue-200]="room.roomType === 'single'" [class.border-green-200]="room.roomType === 'family'"
+            [class.border-gray-200]="!room.roomType" [class.ring-2]="isRoomHighlighted(room)"
+            [class.ring-indigo-500]="isRoomHighlighted(room)" (click)="assignClientToRoom(room)">
+            <div class="flex justify-between items-center "
+              [ngClass]="{'mb-0': is_print_mode || room.clients.length === 0 , 'mb-3': !is_print_mode }">
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="font-medium">غرفة {{room.number}}</span>
+                <span *ngIf="room.roomType" class="text-xs font-medium ml-2 px-2 py-0.5 rounded-full"
+                  [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                  [class.bg-green-100]="room.roomType === 'family'" [class.text-green-800]="room.roomType === 'family'">
+                  {{room.roomType === 'single' ? 'عزاب' : 'عائلي'}} <span *ngIf="room.roomType === 'family'"> -
+                    {{room.clients[0].room_type_num_beds}}</span>
+                </span>
+
+              </div>
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="text-xs text-gray-500">{{room.clients.length}}/{{room.maxCapacity}}</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="w-full ps-2 py-2" *ngIf="room.clients.length > 0; else emptyRoom">
+                <div *ngFor="let client of room.clients; let clientIndex = index"
+                  class="bg-gray-50 rounded  text-sm relative group"
+                  [ngClass]="{'mb-0 p-0': is_print_mode , 'p-2 mb-2': !is_print_mode}">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-medium">{{client.clientName}}</div>
+                      <div class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': is_print_mode}">
+
+                        <span *ngIf="true">
+                          {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                          :'ar')}} </span>
+                        <!-- <span *ngIf="client.numOfRooms > 1" class="mx-1">|</span>
+                        <span *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                      </div>
+                      <!-- <span class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': !is_print_mode}"
+                        *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                    </div>
+                    <button (click)="removeClientFromRoom(i + 20, clientIndex); $event.stopPropagation()"
+                      [ngClass]="{'hidden': is_print_mode}"
+                      class="opacity-0 p-1 group-hover:opacity-100 text-red-500 hover:bg-red-100 hover:text-red-700 transition-opacity">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                    {{client.invoiceNumber}} -
+                    <span *ngIf="client.isFamily">عائلة</span>
+                    <span *ngIf="!client.isFamily">عزاب</span>
+                  </div>
+                  <div *ngIf="showPhoneNumber || show_date"
+                    class="text-[12px] text-gray-500 phone_number flex flex-col">
+                    <span *ngIf="show_date">
+                      {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                      :'ar')}} </span>
+                    <span *ngIf="showPhoneNumber"> {{client.phoneNumber}}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class=" flex flex-col items-start w-fit" [ngClass]="{'hidden': !is_print_mode}">
+                <div class="border border-gray-300 rounded-tl-lg white-box bg-white flex flex-col gap-0">
+                  <span *ngIf="room.clients.length > 0"
+                    class=" font-medium px-2 text-[14px] w-full text-center line-height-normal"
+                    [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                    [class.bg-green-100]="room.roomType === 'family'"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.roomType === 'single' ? 'عزاب'
+                    :'عائلي'}}</span>
+
+                  <span *ngIf="room.roomType === 'family'"
+                    class="text-[14px] font-medium px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.clients[0].room_type_num_beds}} سرير</span>
+                  <!-- <span *ngIf="room.roomType === 'family'" class="text-[14px] font-bold px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'"> </span> -->
+
+                </div>
+
+              </div>
+            </div>
+
+            <ng-template #emptyRoom>
+              <div class="bg-gray-50 rounded p-4 w-full h-full text-center text-sm text-gray-500">
+                فارغة
+                <div *ngIf="selectedClient" class="mt-2 text-xs text-indigo-600">
+                  انقر لإضافة العميل المحدد
+                </div>
+              </div>
+            </ng-template>
+          </div>
+
+
+        </div>
+
+        <div *ngIf="rooms.length >40" class=" bg-gray-300  my-2 p-4"></div>
+
+        <!-- 40, 60 -->
+        <div class="grid grid-cols-1  gap-4"
+          [ngClass]="{'grid-cols-4': is_print_mode ,'md:grid-cols-2' :!is_print_mode , 'lg:grid-cols-3' :!is_print_mode , 'xl:grid-cols-4' : !is_print_mode}">
+
+          <div *ngFor="let room of rooms.slice(40, 60); let i = index"
+            class="room print-room bg-white border rounded-lg  cursor-pointer relative"
+            [ngClass]="{'min-h-[120px]': is_print_mode , 'min-h-[140px]': !is_print_mode , 'p-4': !is_print_mode , 'p-0': is_print_mode}"
+            [class.border-blue-200]="room.roomType === 'single'" [class.border-green-200]="room.roomType === 'family'"
+            [class.border-gray-200]="!room.roomType" [class.ring-2]="isRoomHighlighted(room)"
+            [class.ring-indigo-500]="isRoomHighlighted(room)" (click)="assignClientToRoom(room)">
+            <div class="flex justify-between items-center "
+              [ngClass]="{'mb-0': is_print_mode || room.clients.length === 0 , 'mb-3': !is_print_mode }">
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="font-medium">غرفة {{room.number}}</span>
+                <span *ngIf="room.roomType" class="text-xs font-medium ml-2 px-2 py-0.5 rounded-full"
+                  [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                  [class.bg-green-100]="room.roomType === 'family'" [class.text-green-800]="room.roomType === 'family'">
+                  {{room.roomType === 'single' ? 'عزاب' : 'عائلي'}} <span *ngIf="room.roomType === 'family'"> -
+                    {{room.clients[0].room_type_num_beds}}</span>
+                </span>
+
+              </div>
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="text-xs text-gray-500">{{room.clients.length}}/{{room.maxCapacity}}</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="w-full ps-2 py-2" *ngIf="room.clients.length > 0; else emptyRoom">
+                <div *ngFor="let client of room.clients; let clientIndex = index"
+                  class="bg-gray-50 rounded  text-sm relative group"
+                  [ngClass]="{'mb-0 p-0': is_print_mode , 'p-2 mb-2': !is_print_mode}">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-medium">{{client.clientName}}</div>
+                      <div class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                        <span *ngIf="true">
+                          {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                          :'ar')}} </span>
+                        <!-- <span *ngIf="client.numOfRooms > 1" class="mx-1">|</span>
+                        <span *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                      </div>
+                      <!-- <span class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': !is_print_mode}"
+                        *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                    </div>
+                    <button (click)="removeClientFromRoom(i + 40, clientIndex); $event.stopPropagation()"
+                      [ngClass]="{'hidden': is_print_mode}"
+                      class="opacity-0 p-1 group-hover:opacity-100 text-red-500 hover:bg-red-100 hover:text-red-700 transition-opacity">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                    {{client.invoiceNumber}} -
+                    <span *ngIf="client.isFamily">عائلة</span>
+                    <span *ngIf="!client.isFamily">عزاب</span>
+                  </div>
+                  <div *ngIf="showPhoneNumber || show_date"
+                    class="text-[12px] text-gray-500 phone_number flex flex-col">
+                    <span *ngIf="show_date">
+                      {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                      :'ar')}} </span>
+                    <span *ngIf="showPhoneNumber"> {{client.phoneNumber}}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class=" flex flex-col items-start w-fit" [ngClass]="{'hidden': !is_print_mode}">
+                <div class="border border-gray-300 rounded-tl-lg white-box bg-white flex flex-col gap-0">
+                  <span *ngIf="room.clients.length > 0"
+                    class=" font-medium px-2 text-[14px] w-full text-center line-height-normal"
+                    [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                    [class.bg-green-100]="room.roomType === 'family'"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.roomType === 'single' ? 'عزاب'
+                    :'عائلي'}}</span>
+
+                  <span *ngIf="room.roomType === 'family'"
+                    class="text-[14px] font-medium px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.clients[0].room_type_num_beds}} سرير</span>
+                  <!-- <span *ngIf="room.roomType === 'family'" class="text-[14px] font-bold px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'"> </span> -->
+
+                </div>
+
+              </div>
+            </div>
+
+            <ng-template #emptyRoom>
+              <div class="bg-gray-50 rounded p-4 w-full h-full text-center text-sm text-gray-500">
+                فارغة
+                <div *ngIf="selectedClient" class="mt-2 text-xs text-indigo-600">
+                  انقر لإضافة العميل المحدد
+                </div>
+              </div>
+            </ng-template>
+          </div>
+
+
+        </div>
+
+        <!-- copy start from here -->
+        <div *ngIf="rooms.length >60" class=" bg-gray-300  my-2 p-4"></div>
+
+        <!-- 60, 80 -->
+        <div class="grid grid-cols-1  gap-4"
+          [ngClass]="{'grid-cols-4': is_print_mode ,'md:grid-cols-2' :!is_print_mode , 'lg:grid-cols-3' :!is_print_mode , 'xl:grid-cols-4' : !is_print_mode}">
+
+          <div *ngFor="let room of rooms.slice(60, 80); let i = index"
+            class="room print-room bg-white border rounded-lg  cursor-pointer relative"
+            [ngClass]="{'min-h-[120px]': is_print_mode , 'min-h-[140px]': !is_print_mode , 'p-4': !is_print_mode , 'p-0': is_print_mode}"
+            [class.border-blue-200]="room.roomType === 'single'" [class.border-green-200]="room.roomType === 'family'"
+            [class.border-gray-200]="!room.roomType" [class.ring-2]="isRoomHighlighted(room)"
+            [class.ring-indigo-500]="isRoomHighlighted(room)" (click)="assignClientToRoom(room)">
+            <div class="flex justify-between items-center "
+              [ngClass]="{'mb-0': is_print_mode || room.clients.length === 0 , 'mb-3': !is_print_mode }">
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="font-medium">غرفة {{room.number}}</span>
+                <span *ngIf="room.roomType" class="text-xs font-medium ml-2 px-2 py-0.5 rounded-full"
+                  [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                  [class.bg-green-100]="room.roomType === 'family'" [class.text-green-800]="room.roomType === 'family'">
+                  {{room.roomType === 'single' ? 'عزاب' : 'عائلي'}} <span *ngIf="room.roomType === 'family'"> -
+                    {{room.clients[0].room_type_num_beds}}</span>
+                </span>
+
+              </div>
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="text-xs text-gray-500">{{room.clients.length}}/{{room.maxCapacity}}</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="w-full ps-2 py-2" *ngIf="room.clients.length > 0; else emptyRoom">
+                <div *ngFor="let client of room.clients; let clientIndex = index"
+                  class="bg-gray-50 rounded  text-sm relative group"
+                  [ngClass]="{'mb-0 p-0': is_print_mode , 'p-2 mb-2': !is_print_mode}">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-medium">{{client.clientName}}</div>
+                      <div class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                        <span *ngIf="true">
+                          {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                          :'ar')}} </span>
+                        <!-- <span *ngIf="client.numOfRooms > 1" class="mx-1">|</span>
+                        <span *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                      </div>
+                      <!-- <span class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': !is_print_mode}"
+                        *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                    </div>
+                    <button (click)="removeClientFromRoom(i + 60, clientIndex); $event.stopPropagation()"
+                      [ngClass]="{'hidden': is_print_mode}"
+                      class="opacity-0 p-1 group-hover:opacity-100 text-red-500 hover:bg-red-100 hover:text-red-700 transition-opacity">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                    {{client.invoiceNumber}} -
+                    <span *ngIf="client.isFamily">عائلة</span>
+                    <span *ngIf="!client.isFamily">عزاب</span>
+                  </div>
+                  <div *ngIf="showPhoneNumber || show_date"
+                    class="text-[12px] text-gray-500 phone_number flex flex-col">
+                    <span *ngIf="show_date">
+                      {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                      :'ar')}} </span>
+                    <span *ngIf="showPhoneNumber"> {{client.phoneNumber}}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class=" flex flex-col items-start w-fit" [ngClass]="{'hidden': !is_print_mode}">
+                <div class="border border-gray-300 rounded-tl-lg white-box bg-white flex flex-col gap-0">
+                  <span *ngIf="room.clients.length > 0"
+                    class=" font-medium px-2 text-[14px] w-full text-center line-height-normal"
+                    [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                    [class.bg-green-100]="room.roomType === 'family'"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.roomType === 'single' ? 'عزاب'
+                    :'عائلي'}}</span>
+
+                  <span *ngIf="room.roomType === 'family'"
+                    class="text-[14px] font-medium px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.clients[0].room_type_num_beds}} سرير</span>
+                  <!-- <span *ngIf="room.roomType === 'family'" class="text-[14px] font-bold px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'"> </span> -->
+
+                </div>
+
+              </div>
+            </div>
+
+            <ng-template #emptyRoom>
+              <div class="bg-gray-50 rounded p-4 w-full h-full text-center text-sm text-gray-500">
+                فارغة
+                <div *ngIf="selectedClient" class="mt-2 text-xs text-indigo-600">
+                  انقر لإضافة العميل المحدد
+                </div>
+              </div>
+            </ng-template>
+          </div>
+
+
+        </div>        
+        
+        <div *ngIf="rooms.length >80" class=" bg-gray-300  my-2 p-4"></div>
+
+        <!-- 80, 100 -->
+        <div class="grid grid-cols-1  gap-4"
+          [ngClass]="{'grid-cols-4': is_print_mode ,'md:grid-cols-2' :!is_print_mode , 'lg:grid-cols-3' :!is_print_mode , 'xl:grid-cols-4' : !is_print_mode}">
+
+          <div *ngFor="let room of rooms.slice(80, 100); let i = index"
+            class="room print-room bg-white border rounded-lg  cursor-pointer relative"
+            [ngClass]="{'min-h-[120px]': is_print_mode , 'min-h-[140px]': !is_print_mode , 'p-4': !is_print_mode , 'p-0': is_print_mode}"
+            [class.border-blue-200]="room.roomType === 'single'" [class.border-green-200]="room.roomType === 'family'"
+            [class.border-gray-200]="!room.roomType" [class.ring-2]="isRoomHighlighted(room)"
+            [class.ring-indigo-500]="isRoomHighlighted(room)" (click)="assignClientToRoom(room)">
+            <div class="flex justify-between items-center "
+              [ngClass]="{'mb-0': is_print_mode || room.clients.length === 0 , 'mb-3': !is_print_mode }">
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="font-medium">غرفة {{room.number}}</span>
+                <span *ngIf="room.roomType" class="text-xs font-medium ml-2 px-2 py-0.5 rounded-full"
+                  [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                  [class.bg-green-100]="room.roomType === 'family'" [class.text-green-800]="room.roomType === 'family'">
+                  {{room.roomType === 'single' ? 'عزاب' : 'عائلي'}} <span *ngIf="room.roomType === 'family'"> -
+                    {{room.clients[0].room_type_num_beds}}</span>
+                </span>
+
+              </div>
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="text-xs text-gray-500">{{room.clients.length}}/{{room.maxCapacity}}</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="w-full ps-2 py-2" *ngIf="room.clients.length > 0; else emptyRoom">
+                <div *ngFor="let client of room.clients; let clientIndex = index"
+                  class="bg-gray-50 rounded  text-sm relative group"
+                  [ngClass]="{'mb-0 p-0': is_print_mode , 'p-2 mb-2': !is_print_mode}">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-medium">{{client.clientName}}</div>
+                      <div class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                        <span *ngIf="true">
+                          {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                          :'ar')}} </span>
+                        <!-- <span *ngIf="client.numOfRooms > 1" class="mx-1">|</span>
+                        <span *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                      </div>
+                      <!-- <span class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': !is_print_mode}"
+                        *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                    </div>
+                    <button (click)="removeClientFromRoom(i + 80, clientIndex); $event.stopPropagation()"
+                      [ngClass]="{'hidden': is_print_mode}"
+                      class="opacity-0 p-1 group-hover:opacity-100 text-red-500 hover:bg-red-100 hover:text-red-700 transition-opacity">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                    {{client.invoiceNumber}} -
+                    <span *ngIf="client.isFamily">عائلة</span>
+                    <span *ngIf="!client.isFamily">عزاب</span>
+                  </div>
+                  <div *ngIf="showPhoneNumber || show_date"
+                    class="text-[12px] text-gray-500 phone_number flex flex-col">
+                    <span *ngIf="show_date">
+                      {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                      :'ar')}} </span>
+                    <span *ngIf="showPhoneNumber"> {{client.phoneNumber}}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class=" flex flex-col items-start w-fit" [ngClass]="{'hidden': !is_print_mode}">
+                <div class="border border-gray-300 rounded-tl-lg white-box bg-white flex flex-col gap-0">
+                  <span *ngIf="room.clients.length > 0"
+                    class=" font-medium px-2 text-[14px] w-full text-center line-height-normal"
+                    [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                    [class.bg-green-100]="room.roomType === 'family'"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.roomType === 'single' ? 'عزاب'
+                    :'عائلي'}}</span>
+
+                  <span *ngIf="room.roomType === 'family'"
+                    class="text-[14px] font-medium px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.clients[0].room_type_num_beds}} سرير</span>
+                  <!-- <span *ngIf="room.roomType === 'family'" class="text-[14px] font-bold px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'"> </span> -->
+
+                </div>
+
+              </div>
+            </div>
+
+            <ng-template #emptyRoom>
+              <div class="bg-gray-50 rounded p-4 w-full h-full text-center text-sm text-gray-500">
+                فارغة
+                <div *ngIf="selectedClient" class="mt-2 text-xs text-indigo-600">
+                  انقر لإضافة العميل المحدد
+                </div>
+              </div>
+            </ng-template>
+          </div>
+
+
+        </div>        
+        
+        <div *ngIf="rooms.length >100" class=" bg-gray-300  my-2 p-4"></div>
+
+        <!-- 100, 120 -->
+        <div class="grid grid-cols-1  gap-4"
+          [ngClass]="{'grid-cols-4': is_print_mode ,'md:grid-cols-2' :!is_print_mode , 'lg:grid-cols-3' :!is_print_mode , 'xl:grid-cols-4' : !is_print_mode}">
+
+          <div *ngFor="let room of rooms.slice(100, 120); let i = index"
+            class="room print-room bg-white border rounded-lg  cursor-pointer relative"
+            [ngClass]="{'min-h-[120px]': is_print_mode , 'min-h-[140px]': !is_print_mode , 'p-4': !is_print_mode , 'p-0': is_print_mode}"
+            [class.border-blue-200]="room.roomType === 'single'" [class.border-green-200]="room.roomType === 'family'"
+            [class.border-gray-200]="!room.roomType" [class.ring-2]="isRoomHighlighted(room)"
+            [class.ring-indigo-500]="isRoomHighlighted(room)" (click)="assignClientToRoom(room)">
+            <div class="flex justify-between items-center "
+              [ngClass]="{'mb-0': is_print_mode || room.clients.length === 0 , 'mb-3': !is_print_mode }">
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="font-medium">غرفة {{room.number}}</span>
+                <span *ngIf="room.roomType" class="text-xs font-medium ml-2 px-2 py-0.5 rounded-full"
+                  [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                  [class.bg-green-100]="room.roomType === 'family'" [class.text-green-800]="room.roomType === 'family'">
+                  {{room.roomType === 'single' ? 'عزاب' : 'عائلي'}} <span *ngIf="room.roomType === 'family'"> -
+                    {{room.clients[0].room_type_num_beds}}</span>
+                </span>
+
+              </div>
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="text-xs text-gray-500">{{room.clients.length}}/{{room.maxCapacity}}</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="w-full ps-2 py-2" *ngIf="room.clients.length > 0; else emptyRoom">
+                <div *ngFor="let client of room.clients; let clientIndex = index"
+                  class="bg-gray-50 rounded  text-sm relative group"
+                  [ngClass]="{'mb-0 p-0': is_print_mode , 'p-2 mb-2': !is_print_mode}">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-medium">{{client.clientName}}</div>
+                      <div class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                        <span *ngIf="true">
+                          {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                          :'ar')}} </span>
+                        <!-- <span *ngIf="client.numOfRooms > 1" class="mx-1">|</span>
+                        <span *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                      </div>
+                      <!-- <span class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': !is_print_mode}"
+                        *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                    </div>
+                    <button (click)="removeClientFromRoom(i + 100, clientIndex); $event.stopPropagation()"
+                      [ngClass]="{'hidden': is_print_mode}"
+                      class="opacity-0 p-1 group-hover:opacity-100 text-red-500 hover:bg-red-100 hover:text-red-700 transition-opacity">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                    {{client.invoiceNumber}} -
+                    <span *ngIf="client.isFamily">عائلة</span>
+                    <span *ngIf="!client.isFamily">عزاب</span>
+                  </div>
+                  <div *ngIf="showPhoneNumber || show_date"
+                    class="text-[12px] text-gray-500 phone_number flex flex-col">
+                    <span *ngIf="show_date">
+                      {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                      :'ar')}} </span>
+                    <span *ngIf="showPhoneNumber"> {{client.phoneNumber}}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class=" flex flex-col items-start w-fit" [ngClass]="{'hidden': !is_print_mode}">
+                <div class="border border-gray-300 rounded-tl-lg white-box bg-white flex flex-col gap-0">
+                  <span *ngIf="room.clients.length > 0"
+                    class=" font-medium px-2 text-[14px] w-full text-center line-height-normal"
+                    [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                    [class.bg-green-100]="room.roomType === 'family'"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.roomType === 'single' ? 'عزاب'
+                    :'عائلي'}}</span>
+
+                  <span *ngIf="room.roomType === 'family'"
+                    class="text-[14px] font-medium px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.clients[0].room_type_num_beds}} سرير</span>
+                  <!-- <span *ngIf="room.roomType === 'family'" class="text-[14px] font-bold px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'"> </span> -->
+
+                </div>
+
+              </div>
+            </div>
+
+            <ng-template #emptyRoom>
+              <div class="bg-gray-50 rounded p-4 w-full h-full text-center text-sm text-gray-500">
+                فارغة
+                <div *ngIf="selectedClient" class="mt-2 text-xs text-indigo-600">
+                  انقر لإضافة العميل المحدد
+                </div>
+              </div>
+            </ng-template>
+          </div>
+
+
+        </div>        
+        
+        <div *ngIf="rooms.length >120" class=" bg-gray-300  my-2 p-4"></div>
+
+        <!-- 120, 140 -->
+        <div class="grid grid-cols-1  gap-4"
+          [ngClass]="{'grid-cols-4': is_print_mode ,'md:grid-cols-2' :!is_print_mode , 'lg:grid-cols-3' :!is_print_mode , 'xl:grid-cols-4' : !is_print_mode}">
+
+          <div *ngFor="let room of rooms.slice(120, 140); let i = index"
+            class="room print-room bg-white border rounded-lg  cursor-pointer relative"
+            [ngClass]="{'min-h-[120px]': is_print_mode , 'min-h-[140px]': !is_print_mode , 'p-4': !is_print_mode , 'p-0': is_print_mode}"
+            [class.border-blue-200]="room.roomType === 'single'" [class.border-green-200]="room.roomType === 'family'"
+            [class.border-gray-200]="!room.roomType" [class.ring-2]="isRoomHighlighted(room)"
+            [class.ring-indigo-500]="isRoomHighlighted(room)" (click)="assignClientToRoom(room)">
+            <div class="flex justify-between items-center "
+              [ngClass]="{'mb-0': is_print_mode || room.clients.length === 0 , 'mb-3': !is_print_mode }">
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="font-medium">غرفة {{room.number}}</span>
+                <span *ngIf="room.roomType" class="text-xs font-medium ml-2 px-2 py-0.5 rounded-full"
+                  [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                  [class.bg-green-100]="room.roomType === 'family'" [class.text-green-800]="room.roomType === 'family'">
+                  {{room.roomType === 'single' ? 'عزاب' : 'عائلي'}} <span *ngIf="room.roomType === 'family'"> -
+                    {{room.clients[0].room_type_num_beds}}</span>
+                </span>
+
+              </div>
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="text-xs text-gray-500">{{room.clients.length}}/{{room.maxCapacity}}</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="w-full ps-2 py-2" *ngIf="room.clients.length > 0; else emptyRoom">
+                <div *ngFor="let client of room.clients; let clientIndex = index"
+                  class="bg-gray-50 rounded  text-sm relative group"
+                  [ngClass]="{'mb-0 p-0': is_print_mode , 'p-2 mb-2': !is_print_mode}">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-medium">{{client.clientName}}</div>
+                      <div class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                        <span *ngIf="true">
+                          {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                          :'ar')}} </span>
+                        <!-- <span *ngIf="client.numOfRooms > 1" class="mx-1">|</span>
+                        <span *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                      </div>
+                      <!-- <span class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': !is_print_mode}"
+                        *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                    </div>
+                    <button (click)="removeClientFromRoom(i + 120, clientIndex); $event.stopPropagation()"
+                      [ngClass]="{'hidden': is_print_mode}"
+                      class="opacity-0 p-1 group-hover:opacity-100 text-red-500 hover:bg-red-100 hover:text-red-700 transition-opacity">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                    {{client.invoiceNumber}} -
+                    <span *ngIf="client.isFamily">عائلة</span>
+                    <span *ngIf="!client.isFamily">عزاب</span>
+                  </div>
+                  <div *ngIf="showPhoneNumber || show_date"
+                    class="text-[12px] text-gray-500 phone_number flex flex-col">
+                    <span *ngIf="show_date">
+                      {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                      :'ar')}} </span>
+                    <span *ngIf="showPhoneNumber"> {{client.phoneNumber}}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class=" flex flex-col items-start w-fit" [ngClass]="{'hidden': !is_print_mode}">
+                <div class="border border-gray-300 rounded-tl-lg white-box bg-white flex flex-col gap-0">
+                  <span *ngIf="room.clients.length > 0"
+                    class=" font-medium px-2 text-[14px] w-full text-center line-height-normal"
+                    [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                    [class.bg-green-100]="room.roomType === 'family'"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.roomType === 'single' ? 'عزاب'
+                    :'عائلي'}}</span>
+
+                  <span *ngIf="room.roomType === 'family'"
+                    class="text-[14px] font-medium px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.clients[0].room_type_num_beds}} سرير</span>
+                  <!-- <span *ngIf="room.roomType === 'family'" class="text-[14px] font-bold px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'"> </span> -->
+
+                </div>
+
+              </div>
+            </div>
+
+            <ng-template #emptyRoom>
+              <div class="bg-gray-50 rounded p-4 w-full h-full text-center text-sm text-gray-500">
+                فارغة
+                <div *ngIf="selectedClient" class="mt-2 text-xs text-indigo-600">
+                  انقر لإضافة العميل المحدد
+                </div>
+              </div>
+            </ng-template>
+          </div>
+
+
+        </div>        
+        
+        <div *ngIf="rooms.length >140" class=" bg-gray-300  my-2 p-4"></div>
+
+        <!-- 140, 160 -->
+        <div class="grid grid-cols-1  gap-4"
+          [ngClass]="{'grid-cols-4': is_print_mode ,'md:grid-cols-2' :!is_print_mode , 'lg:grid-cols-3' :!is_print_mode , 'xl:grid-cols-4' : !is_print_mode}">
+
+          <div *ngFor="let room of rooms.slice(140, 160); let i = index"
+            class="room print-room bg-white border rounded-lg  cursor-pointer relative"
+            [ngClass]="{'min-h-[120px]': is_print_mode , 'min-h-[140px]': !is_print_mode , 'p-4': !is_print_mode , 'p-0': is_print_mode}"
+            [class.border-blue-200]="room.roomType === 'single'" [class.border-green-200]="room.roomType === 'family'"
+            [class.border-gray-200]="!room.roomType" [class.ring-2]="isRoomHighlighted(room)"
+            [class.ring-indigo-500]="isRoomHighlighted(room)" (click)="assignClientToRoom(room)">
+            <div class="flex justify-between items-center "
+              [ngClass]="{'mb-0': is_print_mode || room.clients.length === 0 , 'mb-3': !is_print_mode }">
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="font-medium">غرفة {{room.number}}</span>
+                <span *ngIf="room.roomType" class="text-xs font-medium ml-2 px-2 py-0.5 rounded-full"
+                  [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                  [class.bg-green-100]="room.roomType === 'family'" [class.text-green-800]="room.roomType === 'family'">
+                  {{room.roomType === 'single' ? 'عزاب' : 'عائلي'}} <span *ngIf="room.roomType === 'family'"> -
+                    {{room.clients[0].room_type_num_beds}}</span>
+                </span>
+
+              </div>
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="text-xs text-gray-500">{{room.clients.length}}/{{room.maxCapacity}}</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="w-full ps-2 py-2" *ngIf="room.clients.length > 0; else emptyRoom">
+                <div *ngFor="let client of room.clients; let clientIndex = index"
+                  class="bg-gray-50 rounded  text-sm relative group"
+                  [ngClass]="{'mb-0 p-0': is_print_mode , 'p-2 mb-2': !is_print_mode}">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-medium">{{client.clientName}}</div>
+                      <div class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                        <span *ngIf="true">
+                          {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                          :'ar')}} </span>
+                        <!-- <span *ngIf="client.numOfRooms > 1" class="mx-1">|</span>
+                        <span *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                      </div>
+                      <!-- <span class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': !is_print_mode}"
+                        *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                    </div>
+                    <button (click)="removeClientFromRoom(i + 140, clientIndex); $event.stopPropagation()"
+                      [ngClass]="{'hidden': is_print_mode}"
+                      class="opacity-0 p-1 group-hover:opacity-100 text-red-500 hover:bg-red-100 hover:text-red-700 transition-opacity">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                    {{client.invoiceNumber}} -
+                    <span *ngIf="client.isFamily">عائلة</span>
+                    <span *ngIf="!client.isFamily">عزاب</span>
+                  </div>
+                  <div *ngIf="showPhoneNumber || show_date"
+                    class="text-[12px] text-gray-500 phone_number flex flex-col">
+                    <span *ngIf="show_date">
+                      {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                      :'ar')}} </span>
+                    <span *ngIf="showPhoneNumber"> {{client.phoneNumber}}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class=" flex flex-col items-start w-fit" [ngClass]="{'hidden': !is_print_mode}">
+                <div class="border border-gray-300 rounded-tl-lg white-box bg-white flex flex-col gap-0">
+                  <span *ngIf="room.clients.length > 0"
+                    class=" font-medium px-2 text-[14px] w-full text-center line-height-normal"
+                    [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                    [class.bg-green-100]="room.roomType === 'family'"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.roomType === 'single' ? 'عزاب'
+                    :'عائلي'}}</span>
+
+                  <span *ngIf="room.roomType === 'family'"
+                    class="text-[14px] font-medium px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.clients[0].room_type_num_beds}} سرير</span>
+                  <!-- <span *ngIf="room.roomType === 'family'" class="text-[14px] font-bold px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'"> </span> -->
+
+                </div>
+
+              </div>
+            </div>
+
+            <ng-template #emptyRoom>
+              <div class="bg-gray-50 rounded p-4 w-full h-full text-center text-sm text-gray-500">
+                فارغة
+                <div *ngIf="selectedClient" class="mt-2 text-xs text-indigo-600">
+                  انقر لإضافة العميل المحدد
+                </div>
+              </div>
+            </ng-template>
+          </div>
+
+
+        </div>        
+        
+        <div *ngIf="rooms.length >160" class=" bg-gray-300  my-2 p-4"></div>
+
+        <!-- 160, 180 -->
+        <div class="grid grid-cols-1  gap-4"
+          [ngClass]="{'grid-cols-4': is_print_mode ,'md:grid-cols-2' :!is_print_mode , 'lg:grid-cols-3' :!is_print_mode , 'xl:grid-cols-4' : !is_print_mode}">
+
+          <div *ngFor="let room of rooms.slice(160, 180); let i = index"
+            class="room print-room bg-white border rounded-lg  cursor-pointer relative"
+            [ngClass]="{'min-h-[120px]': is_print_mode , 'min-h-[140px]': !is_print_mode , 'p-4': !is_print_mode , 'p-0': is_print_mode}"
+            [class.border-blue-200]="room.roomType === 'single'" [class.border-green-200]="room.roomType === 'family'"
+            [class.border-gray-200]="!room.roomType" [class.ring-2]="isRoomHighlighted(room)"
+            [class.ring-indigo-500]="isRoomHighlighted(room)" (click)="assignClientToRoom(room)">
+            <div class="flex justify-between items-center "
+              [ngClass]="{'mb-0': is_print_mode || room.clients.length === 0 , 'mb-3': !is_print_mode }">
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="font-medium">غرفة {{room.number}}</span>
+                <span *ngIf="room.roomType" class="text-xs font-medium ml-2 px-2 py-0.5 rounded-full"
+                  [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                  [class.bg-green-100]="room.roomType === 'family'" [class.text-green-800]="room.roomType === 'family'">
+                  {{room.roomType === 'single' ? 'عزاب' : 'عائلي'}} <span *ngIf="room.roomType === 'family'"> -
+                    {{room.clients[0].room_type_num_beds}}</span>
+                </span>
+
+              </div>
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="text-xs text-gray-500">{{room.clients.length}}/{{room.maxCapacity}}</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="w-full ps-2 py-2" *ngIf="room.clients.length > 0; else emptyRoom">
+                <div *ngFor="let client of room.clients; let clientIndex = index"
+                  class="bg-gray-50 rounded  text-sm relative group"
+                  [ngClass]="{'mb-0 p-0': is_print_mode , 'p-2 mb-2': !is_print_mode}">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-medium">{{client.clientName}}</div>
+                      <div class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                        <span *ngIf="true">
+                          {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                          :'ar')}} </span>
+                        <!-- <span *ngIf="client.numOfRooms > 1" class="mx-1">|</span>
+                        <span *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                      </div>
+                      <!-- <span class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': !is_print_mode}"
+                        *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                    </div>
+                    <button (click)="removeClientFromRoom(i + 160, clientIndex); $event.stopPropagation()"
+                      [ngClass]="{'hidden': is_print_mode}"
+                      class="opacity-0 p-1 group-hover:opacity-100 text-red-500 hover:bg-red-100 hover:text-red-700 transition-opacity">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                    {{client.invoiceNumber}} -
+                    <span *ngIf="client.isFamily">عائلة</span>
+                    <span *ngIf="!client.isFamily">عزاب</span>
+                  </div>
+                  <div *ngIf="showPhoneNumber || show_date"
+                    class="text-[12px] text-gray-500 phone_number flex flex-col">
+                    <span *ngIf="show_date">
+                      {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                      :'ar')}} </span>
+                    <span *ngIf="showPhoneNumber"> {{client.phoneNumber}}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class=" flex flex-col items-start w-fit" [ngClass]="{'hidden': !is_print_mode}">
+                <div class="border border-gray-300 rounded-tl-lg white-box bg-white flex flex-col gap-0">
+                  <span *ngIf="room.clients.length > 0"
+                    class=" font-medium px-2 text-[14px] w-full text-center line-height-normal"
+                    [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                    [class.bg-green-100]="room.roomType === 'family'"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.roomType === 'single' ? 'عزاب'
+                    :'عائلي'}}</span>
+
+                  <span *ngIf="room.roomType === 'family'"
+                    class="text-[14px] font-medium px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.clients[0].room_type_num_beds}} سرير</span>
+                  <!-- <span *ngIf="room.roomType === 'family'" class="text-[14px] font-bold px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'"> </span> -->
+
+                </div>
+
+              </div>
+            </div>
+
+            <ng-template #emptyRoom>
+              <div class="bg-gray-50 rounded p-4 w-full h-full text-center text-sm text-gray-500">
+                فارغة
+                <div *ngIf="selectedClient" class="mt-2 text-xs text-indigo-600">
+                  انقر لإضافة العميل المحدد
+                </div>
+              </div>
+            </ng-template>
+          </div>
+
+
+        </div>        
+        
+        <div *ngIf="rooms.length >180" class=" bg-gray-300  my-2 p-4"></div>
+
+        <!-- 180, 200 -->
+        <div class="grid grid-cols-1  gap-4"
+          [ngClass]="{'grid-cols-4': is_print_mode ,'md:grid-cols-2' :!is_print_mode , 'lg:grid-cols-3' :!is_print_mode , 'xl:grid-cols-4' : !is_print_mode}">
+
+          <div *ngFor="let room of rooms.slice(180, 200); let i = index"
+            class="room print-room bg-white border rounded-lg  cursor-pointer relative"
+            [ngClass]="{'min-h-[120px]': is_print_mode , 'min-h-[140px]': !is_print_mode , 'p-4': !is_print_mode , 'p-0': is_print_mode}"
+            [class.border-blue-200]="room.roomType === 'single'" [class.border-green-200]="room.roomType === 'family'"
+            [class.border-gray-200]="!room.roomType" [class.ring-2]="isRoomHighlighted(room)"
+            [class.ring-indigo-500]="isRoomHighlighted(room)" (click)="assignClientToRoom(room)">
+            <div class="flex justify-between items-center "
+              [ngClass]="{'mb-0': is_print_mode || room.clients.length === 0 , 'mb-3': !is_print_mode }">
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="font-medium">غرفة {{room.number}}</span>
+                <span *ngIf="room.roomType" class="text-xs font-medium ml-2 px-2 py-0.5 rounded-full"
+                  [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                  [class.bg-green-100]="room.roomType === 'family'" [class.text-green-800]="room.roomType === 'family'">
+                  {{room.roomType === 'single' ? 'عزاب' : 'عائلي'}} <span *ngIf="room.roomType === 'family'"> -
+                    {{room.clients[0].room_type_num_beds}}</span>
+                </span>
+
+              </div>
+              <div class="flex items-center" [ngClass]="{'hidden': is_print_mode}">
+                <span class="text-xs text-gray-500">{{room.clients.length}}/{{room.maxCapacity}}</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-start">
+              <div class="w-full ps-2 py-2" *ngIf="room.clients.length > 0; else emptyRoom">
+                <div *ngFor="let client of room.clients; let clientIndex = index"
+                  class="bg-gray-50 rounded  text-sm relative group"
+                  [ngClass]="{'mb-0 p-0': is_print_mode , 'p-2 mb-2': !is_print_mode}">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-medium">{{client.clientName}}</div>
+                      <div class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                        <span *ngIf="true">
+                          {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                          :'ar')}} </span>
+                        <!-- <span *ngIf="client.numOfRooms > 1" class="mx-1">|</span>
+                        <span *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                      </div>
+                      <!-- <span class="text-xs text-gray-600 mt-1" [ngClass]="{'hidden': !is_print_mode}"
+                        *ngIf="client.numOfRooms > 1">غرفة {{client.roomIndex}}</span> -->
+                    </div>
+                    <button (click)="removeClientFromRoom(i + 180, clientIndex); $event.stopPropagation()"
+                      [ngClass]="{'hidden': is_print_mode}"
+                      class="opacity-0 p-1 group-hover:opacity-100 text-red-500 hover:bg-red-100 hover:text-red-700 transition-opacity">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1" [ngClass]="{'hidden': is_print_mode}">
+                    {{client.invoiceNumber}} -
+                    <span *ngIf="client.isFamily">عائلة</span>
+                    <span *ngIf="!client.isFamily">عزاب</span>
+                  </div>
+                  <div *ngIf="showPhoneNumber || show_date"
+                    class="text-[12px] text-gray-500 phone_number flex flex-col">
+                    <span *ngIf="show_date">
+                      {{(client.fromDate | date: 'dd,MMM' :'' : 'ar' )+ ' - ' + (client.toDate |date: 'dd,MMM' :''
+                      :'ar')}} </span>
+                    <span *ngIf="showPhoneNumber"> {{client.phoneNumber}}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class=" flex flex-col items-start w-fit" [ngClass]="{'hidden': !is_print_mode}">
+                <div class="border border-gray-300 rounded-tl-lg white-box bg-white flex flex-col gap-0">
+                  <span *ngIf="room.clients.length > 0"
+                    class=" font-medium px-2 text-[14px] w-full text-center line-height-normal"
+                    [class.bg-blue-100]="room.roomType === 'single'" [class.text-blue-800]="room.roomType === 'single'"
+                    [class.bg-green-100]="room.roomType === 'family'"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.roomType === 'single' ? 'عزاب'
+                    :'عائلي'}}</span>
+
+                  <span *ngIf="room.roomType === 'family'"
+                    class="text-[14px] font-medium px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'">{{room.clients[0].room_type_num_beds}} سرير</span>
+                  <!-- <span *ngIf="room.roomType === 'family'" class="text-[14px] font-bold px-2 w-full text-center rounded-full my-0 py-0 line-height-normal"
+                    [class.text-green-800]="room.roomType === 'family'"> </span> -->
+
+                </div>
+
+              </div>
+            </div>
+
+            <ng-template #emptyRoom>
+              <div class="bg-gray-50 rounded p-4 w-full h-full text-center text-sm text-gray-500">
+                فارغة
+                <div *ngIf="selectedClient" class="mt-2 text-xs text-indigo-600">
+                  انقر لإضافة العميل المحدد
+                </div>
+              </div>
+            </ng-template>
+          </div>
+
+
+        </div>
+        <!-- copy end  here -->
+
+
+
+        <div class="flex justify-center items-center w-full" [ngClass]="{'hidden': is_print_mode}">
+          <button (click)="add_new_rooms()"
+            class="btn btn-primary bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition my-10">إضافة
+            ورقة جديدة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="main-content">
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number">{{ totalClients }}</div>
+        <div class="stat-label">إجمالي العملاء</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ assignedClients }}</div>
+        <div class="stat-label">المسكنين</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ unassignedClients }}</div>
+        <div class="stat-label">غير مسكنين</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ occupiedRooms }}</div>
+        <div class="stat-label">الغرف المشغولة</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">
+        <span class="icon">👨‍👩‍👧‍👦</span>
+        الغرف العائلية غير المسكنة
+      </h2>
+      <div class="clients-grid">
+        <div *ngFor="let client of familyClients" class="client-card family" [class.selected]="isClientSelected(client)"
+          (click)="selectClient(client, 'family')">
+          <div class="client-info">
+            <div class="client-name">{{ client.clientName }}</div>
+            <div class="client-details">
+              {{ getStayTypeText(client.stayType) }} - {{ getGenderText(client.gender) }}
+              <br>
+              الفندق: {{ client.hotelName }}
+              <br>
+              الفاتورة: {{ client.invoiceNumber }}
+            </div>
+            <span class="client-count">غرفة {{ client.roomIndex }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">
+        <span class="icon">👤</span>
+        العزاب غير المسكنين
+      </h2>
+      <div class="clients-grid">
+        <div *ngFor="let client of FilterUnassignedSinglesPipe(singleClients) " class="client-card single"
+          [class.selected]="isClientSelected(client)" (click)="selectClient(client, 'single')">
+          <div class="client-info">
+            <div class="client-name">{{ client.clientName }}</div>
+            <div class="client-details">
+              {{ getStayTypeText(client.stayType) }} - {{ getGenderText(client.gender) }}
+              <br>
+              الفندق: {{ client.hotelName }}
+              <br>
+              الفاتورة: {{ client.invoiceNumber }}
+            </div>
+            <span class="client-count">× {{ client.remainingCount }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rooms-section">
+      <h2 class="section-title">
+        <span class="icon">🏠</span>
+        الغرف (20 غرفة)
+      </h2>
+      <div class="rooms-grid">
+        <div *ngFor="let room of rooms" class="room-card" [class.can-drop]="isRoomHighlighted(room)"
+          (click)="assignClientToRoom(room)">
+          <div class="room-header">
+            <div class="room-number">غرفة {{ room.number }}</div>
+            <div class="room-capacity" [class.full]="room.clients.length >= room.maxCapacity">
+              {{ room.clients.length }}/{{ room.maxCapacity }}
+            </div>
+          </div>
+          <div class="room-clients">
+            <div *ngIf="room.clients.length === 0" class="empty-room">غرفة فارغة</div>
+            <div *ngFor="let client of room.clients; let i = index" class="room-client">
+              <div class="room-client-info">
+                <div class="room-client-name">{{ client.clientName }}</div>
+                <div class="room-client-type">
+                  {{ getStayTypeText(client.stayType) }} - {{ client.invoiceNumber }}
+                </div>
+              </div>
+              <button class="remove-client" (click)="removeClientFromRoom(room.id - 1, i); $event.stopPropagation()">
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+<!-- Print Content -->
+<!-- <div class="print-content" id="printContent">
+    <div style="text-align: center; margin-bottom: 30px;">
+      <h1>تقرير تنظيم التسكين - العمرة</h1>
+      <p>تاريخ الطباعة: {{ 22/10/2025 | date:'fullDate':'':'ar' }}</p>
+    </div>
+    <div class="print-rooms-grid">
+      <div *ngFor="let room of rooms" class="print-room">
+        <div class="print-room-number">{{ room.number }}</div>
+        <div class="print-room-clients">
+          <div *ngIf="room.clients.length === 0">غرفة فارغة</div>
+          <div *ngFor="let client of room.clients">
+            • {{ client.clientName }} ({{ client.invoiceNumber }})
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- <div class="notification" [class.show]="showNotification">
+  {{ notificationMessage }}
+</div> -->
+
+<!-- <div class="loading" *ngIf="showLoading">
+  <div class="spinner"></div>
+  <div>جاري إنشاء PDF...</div>
+</div> -->
+
+
+<!-- 
+أنا أعمل على نظام حجز رحلات عمرة، وأقوم ببناء كومبوننت مسؤول عن تنظيم التسكين داخل الغرف.اريد منك تنفيذ الاتي بتصميم احترافي و مناسب و يتميز بالسلاسة و السهولة في الاستخدام 
+
+في هذا الكومبوننت، نحصل على بيانات الحجوزات من API تحتوي على معلومات مثل نوع الحجز (عائلي أو عزاب)، عدد الأفراد (totalCount)، وعدد الغرف أو الأسرة المطلوبة.
+
+الهدف من الكومبوننت هو عرض العملاء الغير موزعين، وتقسيمهم إلى أقسام:
+
+الغرف العائلية (تأخذ عرض الصفحة كاملًا).
+
+العزاب (تم إلغاء التمييز بين الرجال والنساء مؤقتًا).
+
+ويمكنني الضغط على عميل ثم الضغط على غرفة لتسكينه يدويًا، مع مراعاة أن كل غرفة تحتوي على 4 أفراد كحد أقصى.
+
+✅ طريقة التعامل مع العملاء:
+
+👨‍👩‍👧‍👦 العائلي:
+
+كل حجز عائلي يحتوي على عدد غرف محدد (numOfRooms).
+
+يتم تكرار العميل في قسم "الغرف العائلية" بعدد مرات = عدد الغرف.
+
+عند التسكين، كل عنصر يمثل غرفة مستقلة.
+
+عند الحذف من الغرفة، يتم إرجاع العنصر مباشرة إلى القائمة.
+
+👤 العزاب:
+
+كل حجز عزاب يحتوي على عدد أفراد (totalCount).
+
+في قسم "العزاب غير المسكنين"، يظهر العميل مرة واحدة فقط ومعه العدد الإجمالي مثل: محمد × 3.
+
+عند تسكينه، يتم **إضافة نسخة مكررة بعدد **totalCount إلى الغرف.
+
+عند الحذف من الغرفة، يتم إزالة عنصر واحد فقط، ويعاد عنصر واحد فقط إلى القائمة مع العدد المتبقي.
+
+يستمر ظهور العميل في قائمة العزاب غير المسكنين طالما هناك أفراد لم يُسكنوا بعد.
+
+🧠 وظائف الكومبوننت:
+
+✅ assignClientToRoom(client):
+
+تسكين عميل في الغرفة المحددة، مع التأكد من وجود مكان (أقل من 4).
+
+يتم إزالة العميل من قائمة غير المسكنين بشكل جزئي حسب عدد الأفراد المتبقيين.
+
+✅ removeClientFromRoom(roomIndex, clientIndex):
+
+إزالة عنصر واحد من الغرفة، وإعادته إلى قائمة غير المسكنين.
+
+في حالة العزاب، يتم حساب العدد المتبقي بشكل ديناميكي.
+
+✅ resetAssignment():
+
+تعيد توزيع كل العملاء من الغرف إلى قوائمهم الصحيحة (عائلي أو عزاب).
+
+يتم تفريغ الغرف أولاً، ثم إعادة توزيع العناصر بشكل آمن بدون تكرار زائد.
+
+✅ autoAssignSingles():
+
+توزع تلقائيًا العملاء العزاب فقط.
+
+كل عميل يُسكن حسب العدد المتاح في الغرف.
+
+يتم تقليل العدد (totalCount) حسب ما تم تسكينه، والباقي يُعاد للقائمة.
+
+✅ autoAssignFamily():
+
+توزع تلقائيًا الغرف العائلية.
+
+كل عنصر (يمثل غرفة) يوضع في غرفة فارغة.
+
+في حال عدم وجود غرف كافية، يظهر alert ويتم الاحتفاظ بالعناصر المتبقية في القائمة.
+
+🖨️ دعم الطباعة PDF:
+
+تم دعم طباعة PDF باستخدام مكتبة html2pdf.js من خلال زر يقوم بتحويل محتوى التسكين إلى ملف PDF بعرض A4 landscape.
+
+التصميم يحتوي على مربعات تمثل الغرف (عددهم ثابت حاليًا 20)، وكل مربع يمثل غرفة ويحتوي على العملاء المسكنين بداخلها. هناك مربع صغير على اليسار العلوي لحجز رقم الغرفة يدويًا بعد الطباعة.
+
+📌 تقنيات مستخدمة:
+
+Angular 18 Standalone Components
+
+html2pdf.js
+
+TypeScript
+
+SCSS + Tailwind CSS (أو Flex-based layout)
+
+تصنيف العملاء حسب stayType
+
+استخدام totalCount و numOfRooms لحساب التوزيع الديناميكي
+
+لو محتاج أضيف أمثلة أو ملفات تصميم أو سكريبتات PDF، بلغني فوراً 💪
+
+و دول مثال بسيط لمكون الحجز {
+
+    "clientName": "محمد مصطفي  .",
+
+    "menCount": 0,
+
+    "womenCount": 0,
+
+    "totalCount": 1,
+
+    "hotelName": "ام الدانة ميلينيوم",
+
+    "bedsCountInRoom": 0,
+
+    "numOfRooms": 0,
+
+    "numOfSingleBeds": 1,
+
+    "fromDate": "2025-07-03T00:00:00",
+
+    "toDate": "2025-07-05T00:00:00",
+
+    "stayType": 1,
+
+    "gender": 1,
+
+    "invoiceNumber": "INV-1122",
+
+    "employeeName": "Admin Admin",
+
+    "paymentMethod": 2
+
+}{
+
+    "clientName": "محمد احمد  .",
+
+    "menCount": 0,
+
+    "womenCount": 2,
+
+    "totalCount": 3,
+
+    "hotelName": "ام الدانة ميلينيوم",
+
+    "bedsCountInRoom": 3,
+
+    "numOfRooms": 1,
+
+    "numOfSingleBeds": 0,
+
+    "fromDate": "2025-07-03T00:00:00",
+
+    "toDate": "2025-07-05T00:00:00",
+
+    "stayType": 2,
+
+    "gender": 1,
+
+    "invoiceNumber": "INV-1115",
+
+    "employeeName": "Admin Admin",
+
+    "paymentMethod": 1
+
+}{
+
+    "clientName": "عماد ابراهيم محمد  .",
+
+    "menCount": 2,
+
+    "womenCount": 3,
+
+    "totalCount": 6,
+
+    "hotelName": "ام الدانة ميلينيوم",
+
+    "bedsCountInRoom": 6,
+
+    "numOfRooms": 1,
+
+    "numOfSingleBeds": 0,
+
+    "fromDate": "2025-07-04T00:00:00",
+
+    "toDate": "2025-07-09T00:00:00",
+
+    "stayType": 2,
+
+    "gender": 1,
+
+    "invoiceNumber": "INV-1099",
+
+    "employeeName": "Admin Admin",
+
+    "paymentMethod": 3
+
+}و هناك enum     stayType: {
+
+      1: "عزاب",
+
+      2: "عائلي"
+
+    },    gender: {
+
+      1: "ذكر",
+
+      2: "أنثى"
+
+    },
+-->

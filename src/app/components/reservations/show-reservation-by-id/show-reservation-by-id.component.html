@@ -1,0 +1,385 @@
+<form class="reservation_form">
+    <div class="overflow-x-auto ">
+
+        <h3 class="text-[1.8rem] font-medium text-start mb-3 flex justify-between">
+            <div class="">
+                كود الحجز :
+                <span class="text-[2rem] ">{{reservation_data.invoiceNumber || '-'}}</span>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+
+                <span class="text-[1rem] ">{{employee_name}}</span>
+                <span class="text-[1rem] ">{{reservation_data.createdOn | date: 'yyyy-MM-dd'}}</span>
+                <span class="text-[1rem] ">{{reservation_data.createdOn | date: 'hh:mm'}} {{reservation_data.createdOn |
+                    date: 'a' : '' : 'ar-EG'}}</span>
+            </div>
+        </h3>
+
+        <div class="flex justify-center items-center px-20">
+            <h2 class="text-[2.5rem] font-bold text-center my-6 {{isDeletedView ? 'text-red-600' : ''}}">تفاصيل الحجز
+                {{ isDeletedView ? '- (ملغي)' : '' }}
+            </h2>
+
+        </div>
+
+        @if(reservation_data && !isDeletedView){
+        <div class="py-5 flex justify-end gap-2 items-center">
+            <!-- <button class="shared_btn_style secondry_btn">طباعة الفاتورة</button>
+            <button class="shared_btn_style secondry_btn">تنزيل الفاتورة</button> -->
+            <!-- زر التنزيل -->
+            <button type="button" (click)="downloadPdf(reservation_id)"
+                class="inline-flex items-center gap-1 px-3 py-1 bg-blue-200 text-blue-600 rounded hover:bg-blue-300 transition  font-medium"
+                title="تنزيل الفاتورة">
+                تنزيل الفاتورة
+                <i class="fa-solid fa-file-arrow-down"></i>
+            </button>
+
+            <!-- زر الطباعة -->
+            <button type="button" (click)="printPdf(reservation_id)"
+                class="inline-flex items-center gap-1 px-3 py-1 bg-purple-200 text-purple-600 rounded hover:bg-purple-300 transition  font-medium"
+                title="طباعة الفاتورة">
+                طباعة الفاتورة
+                <i class="fa-solid fa-print"></i>
+            </button>
+
+            <!-- زر العرض -->
+            <button type="button" (click)="openInvoice(reservation_id)"
+                class="inline-flex items-center gap-1 px-3 py-1 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition  font-medium"
+                title="عرض الفاتورة">
+                عرض الفاتورة
+                <i class="fa-solid fa-eye"></i>
+            </button>
+        </div>
+        }
+
+
+        <h5 class="text-[1.5rem]">بيانات العملاء</h5>
+        @for (user of users_data ; track user; let i = $index) {
+        <div class="user_data flex flex-wrap gap-5 my-5">
+            <div class="group">
+                <label for="user_name">الإسم</label>
+                <input class="crud_input" type="text" name="user_name" id="user_name" [value]="user.customer.fullName"
+                    disabled>
+            </div>
+            <div class="group">
+                <label for="user_phoneNumber">رقم الهاتف</label>
+                <input class="crud_input" type="text" name="user_phoneNumber" id="user_phoneNumber"
+                    [value]="user.customer.phoneNumber" disabled>
+            </div>
+            <div class="group">
+                <label for="user_nationalityId">رقم الهوية</label>
+                <input class="crud_input" type="text" name="user_nationalityId" id="user_nationalityId"
+                    [value]="user.customer.nationalityId" disabled>
+            </div>
+            <div class="group">
+                <label for="user_nationalityId">الجنسية</label>
+                <input class="crud_input w-[100px]" type="text" name="user_nationalityId" id="user_nationalityId"
+                    [value]="user.customer.nationality | enum : 'nationality'" disabled>
+            </div>
+            <div class="group">
+                <label for="user_nationalityId">الجنس</label>
+                <input class="crud_input w-[100px]" type="text" name="user_gender" id="user_gender"
+                    [value]="user.customer.gender | enum : 'gender'" disabled>
+            </div>
+        </div>
+        }
+        <!-- <table class="w-full text-sm text-left rtl:text-right my-10">
+            <thead class="crud_head_titles">
+                <tr>
+                    @for(title of table_head_titles ; track $index) {
+                    <th scope="col" class="px-2 py-3">
+                        {{title}}
+                    </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for(user of users_data ; track user; let i = $index) {
+                <tr class="crud_body_data">
+                    <td class="px-2 py-4">
+                        <input class="crud_input" type="text" name="user_first_name"
+                            [value]="user.firstName + ' ' + user.lastName" readonly>
+                    </td>
+                    <td class="px-2 py-4">
+                        <input class="crud_input" type="text" name="user_phone_number" [value]="user.phoneNumber"
+                            readonly>
+                    </td>
+                    <td class="px-2 py-4">
+                        <input class="crud_input" type="text" name="user_nationality_id" [value]="user.nationalityId"
+                            readonly>
+                    </td>
+                    <td class="px-2 py-4">
+                        <input class="crud_input" type="text" name="user_nationality" id="user_nationality"
+                            [value]="user.nationality | enum : 'nationality'" readonly>
+                    </td>
+                    <td class="px-2 py-4">
+                        <input class="crud_input" type="text" name="user_gender" id="user_gender"
+                            [value]="user.gender | enum : 'gender'" readonly>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table> -->
+    </div>
+    @if(trips_details.length>0){
+    <!-- @if(trips[0].tripTicketType.ticketId){ -->
+    <div class="overflow-x-auto">
+        <h5 class="text-[1.5rem] mb-5">بيانات الرحلة</h5>
+        @for (trip of trips_details ; track trip.tripId) {
+        <div class="trip_data flex flex-wrap gap-5 my-5">
+            <div class="w-full">
+            @if(trip.reserved_chairs.departureReservedChairs?.length>0){<h6>رحلة الذهاب</h6>}
+            @if(trip.reserved_chairs.returnReservedChairs?.length>0){<h6>رحلة العودة</h6>}
+            @if(trip.reserved_chairs.transitReservedChairs?.length>0){<h6>رحلة الترانزيت</h6>}
+            </div>
+            <div class="group">
+                <label for="tripCode">كود الرحلة</label>
+                <input class="crud_input" type="text" name="tripCode" id="tripCode" [value]="trip.tripCode" disabled>
+            </div>
+            <div class="group">
+                <label for="tri_destination">الوجهة من</label>
+                <div class="crud_input p-2">
+                    @if(trip.fromCity && trip.reserved_chairs.departureReservedChairs?.length>0){
+                    <span class="inline-block font crud_body_secondry_color">{{trip.fromCity | enum :'city'}} </span>
+                    }
+                    @if(trip.transitCity && trip.reserved_chairs.transitReservedChairs?.length>0){
+                    <span> <i class="fa-solid fa-left-long px-3"></i> </span>
+                    <span> {{trip.transitCity | enum : 'city'}} </span>
+                    }
+                    @if(trip.toCity && trip.reserved_chairs.returnReservedChairs?.length>0){
+                    <i class="fa-solid fa-left-long px-3"></i>
+                    <span>{{trip.toCity | enum : 'city'}} </span>
+                    }
+                </div>
+            </div>
+            <div class="group">
+                <label for="trip_date">التاريخ</label>
+                <div class="crud_input p-2">
+                    @if(trip.departureTime && trip.reserved_chairs.departureReservedChairs?.length>0){
+                    <span class="crud_body_secondry_color inline-block">{{trip.departureTime | date}} </span>
+                    }
+                    @if(trip.transitLeaveTime && trip.reserved_chairs.transitReservedChairs?.length>0){
+                    <span> <i class=" px-3 fa-solid fa-caret-left"></i> </span>
+                    <span> {{trip.transitLeaveTime | date }} </span>
+                    }
+                    @if(trip.returnTime && trip.reserved_chairs.returnReservedChairs?.length>0){
+                    <span> <i class=" px-3 fa-solid fa-caret-left"></i> </span>
+                    <span> {{trip.returnTime | date }} </span>
+                    }
+                </div>
+            </div>
+            @if(bus_chair_price > 0 && trip.reserved_chairs.departureReservedChairs?.length>0){
+            <div class="group">
+                <label for="bus_chair_price">سعر الكرسي</label>
+                <div class="crud_input py-2 px-3">
+                    <span>{{reservation_data.busChairPrice}}</span>
+                </div>
+            </div>
+            }
+            @if(return_bus_chair_price > 0 && trip.reserved_chairs.returnReservedChairs?.length>0){
+            <div class="group">
+                <label for="return_bus_chair_price">سعر كرسي العودة</label>
+                <div class="crud_input py-2 px-3">
+                    <span>{{reservation_data.returnBusChairPrice}}</span>
+                </div>
+            </div>
+            }
+            @if(trip.reserved_chairs.departureReservedChairs?.length>0){
+            <div class="group">
+                <label for="departure_chairs">ارقام مقاعد الذهاب</label>
+                <div class="crud_input py-2 px-3">
+                    <span>{{trip.reserved_chairs.departureReservedChairs?.split(',').join(' - ')}}</span>
+                </div>
+            </div>
+            }
+            @if(trip.reserved_chairs.transitReservedChairs?.length>0){
+            <div class="group">
+                <label for="transit_chairs">ارقام مقاعد الترانزيت</label>
+                <div class="crud_input py-2 px-3">
+                    <span>{{trip.reserved_chairs.transitReservedChairs?.split(',').join(' - ')}}</span>
+                </div>
+            </div>
+            }
+            @if(trip.reserved_chairs.returnReservedChairs?.length>0){
+            <div class="group">
+                <label for="return_chairs">ارقام مقاعد العودة</label>
+                <div class="crud_input py-2 px-3">
+                    <span>{{trip.reserved_chairs.returnReservedChairs?.split(',').join(' - ')}}</span>
+                </div>
+            </div>
+            }
+        </div>
+        }
+        <!-- <table class="w-full text-sm text-left rtl:text-right">
+            <thead class="crud_head_titles">
+                <tr>
+                    @for(title of trip_head_titles ; track $index) {
+                    <th scope="col" class="px-6 py-3 ">
+                        {{title}}
+                    </th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody>
+                @for(trip of trips_details ; track trip.tripId) {
+                <tr class="crud_body_data border-t">
+                    <td class="px-6 py-4">
+                        {{trip.tripCode}}
+                    </td>
+                    <td class="px-6 py-4 ">
+                        <span class=" inline-block font crud_body_secondry_color">{{trip.fromCity | enum :
+                            'city'}} </span>
+                        @if(trip.transitCity){
+                        <span> <i class="fa-solid fa-left-long px-3"></i> </span>
+                        <span> {{trip.transitCity | enum : 'city'}} </span>
+                        }
+                        <i class="fa-solid fa-left-long px-3"></i>
+                        <span>{{trip.toCity | enum : 'city'}} </span>
+                    </td>
+
+                    <td class="px-6 py-4 ">
+                        <span class="crud_body_secondry_color inline-block ">
+                            {{trip.departureTime | date}} </span>
+                        @if(trip.transitLeaveTime){
+                        <span> <i class=" px-3 fa-solid fa-caret-left"></i> </span>
+                        <span> {{trip.transitLeaveTime | date }} </span>
+                        }
+                        <span> <i class=" px-3 fa-solid fa-caret-left"></i> </span>
+                        <span> {{trip.returnTime | date }} </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        {{reservation_data.busChairPrice}}
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table> -->
+    </div>
+    }
+    @if(hotel_data.id){
+    <h5 class="text-[1.5rem] mb-5 mt-10">بيانات الفندق</h5>
+    <div class="flex flex-wrap gap-5 crud_head_titles">
+        <div class="flex flex-col w-[250px] gap-5">
+            <label for="hotel_name">اسم الفندق</label>
+            <input class="crud_input" id="hotel_name" type="text" name="hotel_name" [value]="hotel_data.name" readonly>
+        </div>
+        <div class="flex flex-col gap-5">
+            <label for="date">تاريخ</label>
+            <div class="crud_input py-2 px-3">
+                <span class="crud_body_secondry_color inline-block ">
+                    {{ residence_from_date | date}} </span>
+                <span> <i class=" px-3 fa-solid fa-caret-left"></i> </span>
+                <span> {{ residence_to_date | date }} </span>
+            </div>
+        </div>
+        @if(reservation_data?.residenceDto?.bedPrice){
+        <div class="flex flex-col w-[125px] gap-5">
+            <label for="bed_price">عدد السرير</label>
+            <input class="crud_input" id="bed_price" type="text" name="bed_price"
+                [value]="reservation_data?.clientsIds?.length" readonly>
+        </div>
+        <div class="flex flex-col w-[125px] gap-5">
+            <label for="bed_price">تكلفة السرير</label>
+            <input class="crud_input" id="bed_price" type="text" name="bed_price"
+                [value]="reservation_data?.residenceDto?.bedPrice" readonly>
+        </div>
+        }
+        <!-- @if(reservation_data?.residenceDto?.roomPrice){
+        <div class="flex flex-col w-[125px] gap-5">
+            <label for="bed_price">عدد الغرف</label>
+            <input class="crud_input" id="bed_price" type="text" name="bed_price"
+                [value]="reservation_data?.residenceDto?.numOfRooms" readonly>
+        </div>
+        <div class="flex flex-col w-[125px] gap-5">
+            <label for="bed_price">تكلفة الغرفة</label>
+            <input class="crud_input" id="bed_price" type="text" name="bed_price"
+                [value]="reservation_data?.residenceDto?.roomPrice" readonly>
+        </div>
+        <div class="flex flex-col w-[125px] gap-5">
+            <label for="bed_price"> سراير الغرف</label>
+            <input class="crud_input" id="bed_price" type="text" name="bed_price"
+                [value]="reservation_data?.residenceDto?.bedsCountInRoom" readonly>
+        </div>
+        } -->
+
+        @if(reservation_data?.residenceDto?.bedPrice){
+        <div class="flex flex-col w-[125px] gap-5">
+            <label for="bed_price">عدد السرير</label>
+            <input class="crud_input" id="bed_price" type="text" name="bed_price"
+                [value]="reservation_data?.clientsIds?.length" readonly>
+        </div>
+        <div class="flex flex-col w-[125px] gap-5">
+            <label for="bed_price">تكلفة السرير</label>
+            <input class="crud_input" id="bed_price" type="text" name="bed_price"
+                [value]="reservation_data?.residenceDto?.bedPrice" readonly>
+        </div>
+        }
+        @if(reservation_data?.residenceDto?.roomPrice){
+        <div class="flex flex-col w-[125px] gap-5">
+            <label for="room_price">تكلفة الغرفة</label>
+            <input class="crud_input" id="room_price" type="text" name="room_price"
+                [value]="reservation_data?.residenceDto?.roomPrice" readonly>
+        </div>
+        }
+
+        @if(reservation_data?.residenceDto?.reservedRooms?.length > 0){
+        <div class="w-full mt-5">
+            <h6 class="text-[1.15rem] mb-3 text-gray-500">تفاصيل الغرف المحجوزة</h6>
+            <div class="flex flex-wrap gap-5">
+                @for (room of reservation_data.residenceDto.reservedRooms; track room.type) {
+                <div class="flex flex-wrap gap-5 p-3 bg-gray-50 rounded">
+                    <div class="flex flex-col w-[150px] gap-2">
+                        <label for="room_type_{{room.type}}">نوع الغرفة</label>
+                        <input class="crud_input px-0" id="room_type_{{room.type}}" type="text"
+                            [value]="room.type | enum : 'room_types'" readonly>
+                    </div>
+                    <div class="flex flex-col w-[125px] gap-2">
+                        <label for="room_count_{{room.type}}">عدد الغرف</label>
+                        <input class="crud_input px-0 font-bold" id="room_count_{{room.type}}" type="text" [value]="room.roomsCount"
+                            readonly>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+        }
+    </div>
+    }
+
+    <div class="">
+        <h5 class="text-[1.5rem] mb-5 mt-10">الملاحظات</h5>
+        <div class="flex flex-col w-[500px] gap-5">
+            <!-- <label for="total_chairs_price">الملاحظات</label> -->
+            <textarea readonly class="crud_input" id="total_chairs_price" rows="2" type="text" name="total_chairs_price"
+                style="resize: none;" placeholder="لا يوجد ملاحظات" [value]="reservation_data?.notes"></textarea>
+        </div>
+
+    </div>
+
+    <div class="mb-20 mt-2">
+        <h5 class="text-[1.5rem] mb-5 mt-10">تفاصيل الدفع</h5>
+        <div class="flex flex-wrap gap-3 crud_head_titles">
+            <div class="flex flex-col w-[250px] gap-5">
+                <label for="total_invoice">المبلغ الإجمالي</label>
+                <input class="crud_input" id="total_invoice" type="number" name="total_invoice" [value]="total_invoice"
+                    readonly>
+            </div>
+            <div class="flex flex-col w-[250px] gap-5">
+                <label for="total_paid">المبلغ المدفوع</label>
+                <input class="crud_input" id="total_paid" type="number" name="total_paid" [value]="total_paid" readonly>
+            </div>
+            <div class="flex flex-col w-[250px] gap-5">
+                <label for="remainingMoney">المبلغ المتبقي</label>
+                <input class="crud_input" id="remainingMoney" type="number" name="remainingMoney"
+                    [value]="remaining_money" readonly>
+            </div>
+            <div class="flex flex-col w-[250px] gap-5">
+                <label for="payment_method">طريقة الدفع</label>
+                <input class="crud_input" id="payment_method" type="text" name="payment_method"
+                    [value]="payment_method | enum : 'PaymentMethod'" readonly>
+            </div>
+
+        </div>
+    </div>
+</form>

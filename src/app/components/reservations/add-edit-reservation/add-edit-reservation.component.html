@@ -1,0 +1,614 @@
+<section class="add_edit_reservation">
+    <!-- اختيار الخطوات -->
+    <ol class="flex flex-wrap items-center justify-between mb-10 gap-5">
+        @for(title of list_titles ; track $index){
+        <li [class.active]="$index + 1 == active_step" (click)="go_to_step($index + 1)">
+            <span class="step_number">{{$index + 1}}</span>
+            <span>{{title}}</span>
+        </li>
+        @if($index + 1 != list_titles.length){
+        <hr [class.finish_step]="completed_steps[$index]">
+        }
+        }
+    </ol>
+</section>
+<section class="steps_content">
+    <!-- step 1 -->
+    @if(active_step == 1){
+    <div class="step_1">
+        <h4 class="step_title"><span><i class="fa-solid fa-user"></i></span> البحث عن عميل</h4>
+        <div class="flex flex-wrap items-start gap-5">
+            <div>
+                <div class="relative w-[450px]">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                    </div>
+                    <input [(ngModel)]="search_input" maxlength="30" name="search" type="search" id="default-search"
+                        class="crud_input block w-full p-4 ps-10" placeholder="ابحث برقم الهوية ...." />
+                    <button type="button" (click)="search_client(search_input)"
+                        class="text-white absolute end-2.5 bottom-2.5 px-3 py-2 thirdry_bg rounded-xl">بحث</button>
+                </div>
+                @if(search_error_msg){
+                <p class="danger_alert mt-2">{{search_error_msg}}</p>
+                }
+            </div>
+            <div class="flex flex-wrap gap-4">
+                @if(users_searched.length > 0){
+                @for(user of users_searched ; track $index){
+                <div class="users_display">{{user.fullName}}
+                    <button type="button" (click)="select_user(user)" title="إضافه"><i
+                            class="fa-solid fa-plus"></i></button>
+                </div>
+                }
+                }
+                @if(user_added_already_alert){
+                <p class="danger_alert">تم إضافة العميل بالفعل</p>
+                }
+            </div>
+        </div>
+
+        <!-- إظهار العملاء اللي تم اختيارهم -->
+        @if(users.controls.length > 0){
+        <form [formGroup]="myForm">
+            <table class="users w-full text-sm text-left rtl:text-right my-10">
+                <thead class="crud_head_titles">
+                    <tr>
+                        <th scope="col" class="px-2 py-3 text-center">
+                            #
+                        </th>
+                        @for(title of table_head_titles ; track $index) {
+                        <th scope="col" class="px-2 py-3">
+                            {{title}}
+                        </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody formArrayName="users">
+                    @for(user of users.controls ; track user; let i = $index) {
+                    <tr class="crud_body_data" [formGroupName]="i">
+                        <td class="px-2 py-4" style="width: 50px;">
+                            <input disabled class="crud_input text-center" type="text" name="user_order"
+                                style="width: 50px;" value="{{i+1}}">
+                        </td>
+                        <td class="px-2 py-4">
+                            <input class="crud_input" type="text" name="user_first_name" formControlName="firstName">
+                        </td>
+                        <!-- <td class="px-2 py-4">
+                            <input class="crud_input" type="text" name="user_last_name" formControlName="lastName">
+                        </td> -->
+                        <td class="px-2 py-4">
+                            <input class="crud_input" maxlength="10" type="tel" pattern="\d*" inputmode="numeric"
+                                name="user_phone_number" formControlName="phoneNumber">
+                        </td>
+                        <td class="px-2 py-4">
+                            <input class="crud_input" type="text" maxlength="10" name="user_nationality_id"
+                                formControlName="nationalityId">
+                        </td>
+                        <td class="px-2 py-4">
+                            <select class="crud_input" name="user_nationality" id="" formControlName="nationality"
+                                (change)="updateControlToNumber($event , i , 'nationality')">
+                                <option selected value=null>اختر الجنسية</option>
+                                @for(nationality of nationalities ; track nationality.id){
+                                <option [value]="nationality.id">{{nationality.name}}</option>
+                                }
+                            </select>
+                        </td>
+                        <td class="px-2 py-4">
+                            <select class="crud_input" name="user_gender" id="" formControlName="gender"
+                                (change)="updateControlToNumber($event , i , 'gender')">
+                                <option selected value=null>اختر الجنس</option>
+                                @for(gender of genderes ; track gender.id){
+                                <option [value]="gender.id">{{gender.name}}</option>
+                                }
+                            </select>
+                        </td>
+                        <td class="px-2 py-4">
+                            <select class="crud_input" name="isCompanion" id="" formControlName="isCompanion">
+                                <option value="client" [ngValue]="false">عميل</option>
+                                <option value="companion" [ngValue]="true">مرافق</option>
+                            </select>
+                        </td>
+                        <td class="px-2 py-4">
+                            <button (click)="remove_user(i)" title="حذف" class="delete_btn"><i
+                                    class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+        }
+        <div class="mt-10 flex justify-end">
+            <button (click)="create_new_user()" title="إضافة عميل" class="shared_btn_style secondry_btn">إضافة
+                عميل</button>
+        </div>
+
+
+    </div>
+    }
+    <!-- step 2 -->
+    @if(active_step == 2){
+    <div class="step_2">
+        <h4 class="step_title"><span><i class="fa-solid fa-bus"></i></span> بيانات الرحلة</h4>
+        <div class="flex flex-wrap gap-10">
+            <select #trip_type [(ngModel)]="trip_type_selected" (change)="select_trip_type(trip_type.value)"
+                class="crud_input p-3" name="trip_type">
+                <option selected value=''>اختر نوع الرحلة</option>
+                @for(trip of trip_types ; track trip.id){
+                <option [value]="trip.id">{{trip.name}}</option>
+                }
+            </select>
+            @if (trip_type_selected == '10'){
+            <select #open_trip_type [(ngModel)]="open_trip_type_selected"
+                (change)="select_trip_type(open_trip_type.value)" class="crud_input" name="open_trip_type">
+                <option selected value=''>اختر نوع الرحلة المفتوحة</option>
+                @for(open_trip of open_trip_types ; track open_trip.id){
+                <option [value]="open_trip.id">{{open_trip.name}}</option>
+                }
+            </select>
+            }
+        </div>
+        <!-- <form class="flex flex-wrap gap-10 my-3">
+            @if(trip_type_selected_id == '1' || trip_type_selected_id == '3' || trip_type_selected_id == '6'){
+            <div class="relative w-[300px]" (click)="openDatePicker(go_date_input)">
+                <input #go_date_input type="date" [attr.min]="tomorrow_date" name="go_date" id="go_date" [(ngModel)]="go_date"
+                    class="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                <div class="flex items-center justify-between bg-[#F9F9F9] rounded-[12px] px-4 py-2 text-[#878CBD] z-0 pointer-events-none"
+                    style="padding: 0.875rem;">
+                    <span class="truncate">{{ go_date || 'تاريخ الذهاب إلى الرحلة' }}</span>
+                    <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                    </svg>
+                </div>
+            </div>
+            }   
+            @if(trip_type_selected_id == '2' || trip_type_selected_id == '3'){           
+            <div class="relative w-[300px]" (click)="openDatePicker(return_date_input)">
+                <input #return_date_input type="date" name="return_date" id="return_date" [(ngModel)]="return_date"
+                    class="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                <div class="flex items-center justify-between bg-[#F9F9F9] rounded-[12px] px-4 py-2 text-[#878CBD] z-0 pointer-events-none"
+                    style="padding: 0.875rem;">
+                    <span class="truncate">{{ return_date || 'تاريخ العودة من الرحلة' }}</span>
+                    <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                    </svg>
+                </div>
+            </div>
+            }           
+        </form> -->
+        <div>
+            <!-- ///////////////////////// trips and buses -->
+            @if(trip_type_selected_id == '5'){
+            <div class="my-10">
+                <!-- trips -->
+                @if(trip_selected_from_trips_page) {
+                <app-trips-for-reservation [reserving]="true" [show_trips_type]="'all'" [trip]="closed_trip_selected"
+                    [trip_id]="closed_trip_selected.id"
+                    (going_return_trip_selected)="going_return_trip_selected($event)"></app-trips-for-reservation>
+                }
+                @else {
+                <app-trips-for-reservation [reserving]="true" [show_trips_type]="'all'"
+                    [trip_id]="closed_trip_selected.id"
+                    (going_return_trip_selected)="going_return_trip_selected($event)"></app-trips-for-reservation>
+                }
+                <!-- buses -->
+                @if(closed_trip_selected.id){
+                <ng-container *ngTemplateOutlet="choose_chairs_tip"></ng-container>
+                <!-- اتوبيس الذهاب -->
+                <app-buses [trip]="closed_trip_selected" trip_type="going"
+                    [selected_going_reserved_chairs]="going_selected_seats"
+                    [chairs_nums_allowed_reserve]="confirmed_users.length" (selected_go_seat_id)="handleGoSeat($event)">
+                </app-buses>
+                <!-- اتوبيس الترانزيت -->
+                @if(closed_trip_selected.transitCity){
+                <app-buses [trip]="closed_trip_selected" trip_type="transit"
+                    [selected_transit_reserved_chairs]="transit_selected_seats"
+                    [chairs_nums_allowed_reserve]="confirmed_users.length"
+                    (selected_transit_seat_id)="handleTransitSeat($event)">
+                </app-buses>
+                }
+                <!-- اتوبيس العودة -->
+                <app-buses [trip]="closed_trip_selected" trip_type="return"
+                    [selected_return_reserved_chairs]="return_selected_seats"
+                    [chairs_nums_allowed_reserve]="confirmed_users.length"
+                    (selected_return_seat_id)="handleReturnSeat($event)">
+                </app-buses>
+                }
+            </div>
+            }
+            @if(trip_type_selected_id == '1' || trip_type_selected_id == '3' || trip_type_selected_id == '6'){
+            <div class="my-10">
+                <app-trips-for-reservation [reserving]="true"
+                    [show_trips_type]="trip_type_selected_id =='6' ? 'transit_trips' : 'going_trips'"
+                    [go_date]="go_date" [trip_id]="open_going_trip_selected.id"
+                    (going_trip_selected)="going_trip_selected($event)"></app-trips-for-reservation>
+                @if(open_going_trip_selected.id){
+                <ng-container *ngTemplateOutlet="choose_chairs_tip"></ng-container>
+                <!-- اتوبيس الذهاب -->
+                <app-buses [trip]="open_going_trip_selected" trip_type="going"
+                    [selected_going_reserved_chairs]="going_selected_seats"
+                    [chairs_nums_allowed_reserve]="confirmed_users.length" (selected_go_seat_id)="handleGoSeat($event)">
+                </app-buses>
+                }
+            </div>
+            }
+            @if(trip_type_selected_id == '2' || trip_type_selected_id == '3'){
+            <div class="my-10">
+                <app-trips-for-reservation [reserving]="true" [show_trips_type]="'return_trips'"
+                    [return_date]="return_date" [trip_id]="open_return_trip_selected.id"
+                    (return_trip_selected)="return_trip_selected($event)"></app-trips-for-reservation>
+                @if(open_return_trip_selected.id){
+                <ng-container *ngTemplateOutlet="choose_chairs_tip"></ng-container>
+                <!-- اتوبيس العودة -->
+                <app-buses [trip]="open_return_trip_selected" trip_type="return"
+                    [selected_return_reserved_chairs]="return_selected_seats"
+                    [chairs_nums_allowed_reserve]="confirmed_users.length"
+                    (selected_return_seat_id)="handleReturnSeat($event)">
+                </app-buses>
+                }
+            </div>
+            }
+
+            <!-- ///////////////////////// buses -->
+            <ng-template #choose_chairs_tip>
+                <div class="my-10">
+                    <h5 class="mb-5 text-[1.5rem] font-semibold thirdry_color">اختر المقاعد</h5>
+                    <p class="flex flex-wrap items-center gap-5">
+                        <span><img src="./assets/images/green_seat.svg" alt="green_seat" /></span>
+                        <span>المقاعد باللون الأخضر متاحة للحجز</span>
+                    </p>
+                    <p class="flex flex-wrap items-center gap-5">
+                        <span><img src="./assets/images/yellow_seat.svg" alt="yellow_seat" /></span>
+                        <span>المقاعد باللون الأصفر محجوزة</span>
+                    </p>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+    }
+    <!-- step 3 -->
+    @if(active_step == 3){
+    <div class="step_3">
+        <h4 class="step_title"><span><i class="fa-solid fa-hotel"></i></span> بيانات الفندق</h4>
+        <div class="flex flex-wrap items-end gap-5">
+            @if(trip_type_selected_id == '1' || trip_type_selected_id == '3' || trip_type_selected_id == '5'){
+            <select [(ngModel)]="residence_type_selected_id" (change)="get_hotels_in_case_resedince()"
+                class="crud_input" name="residence_type">
+                <option selected value=null>اختر نوع الإقامة</option>
+                @for(residence of residence_types ; track residence.id){
+                <option [value]="residence.id">{{residence.name}}</option>
+                }
+            </select>
+            }
+            <!-- @if(trip_type_selected_id != '4' && residence_type_selected_id == 1){
+                <div>
+                    <label class="text-[#878CBD]" for="from_date">تاريخ دخول الفندق</label>
+                    <div class="relative w-[300px] mt-2">
+                        <input type="date" class="absolute inset-0 opacity-0 z-10" readonly/>
+                        <div class="flex items-center justify-between bg-[#F9F9F9] rounded-[12px] px-4 py-2 text-[#878CBD] z-0 pointer-events-none"
+                            style="padding: 0.875rem;">
+                            <span class="truncate">
+                                {{ this.residence_form.get('residence_from_date')?.value | date : undefined : undefined : "en-US" }}
+                            </span>
+                            <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            } -->
+
+            <!-- ############## start added by shaaban ########### -->
+            @if(trip_type_selected_id != '4' && trip_type_selected_id != '1' && trip_type_selected_id != '3' &&
+            residence_type_selected_id == 1){
+            <div>
+                <label class="text-[#878CBD]" for="from_date">تاريخ دخول الفندق</label>
+                <div class="relative w-[300px] mt-2">
+                    <input type="date" class="absolute inset-0 opacity-0 z-10" readonly />
+                    <div class="flex items-center justify-between bg-[#F9F9F9] rounded-[12px] px-4 py-2 text-[#878CBD] z-0 pointer-events-none"
+                        style="padding: 0.875rem;">
+                        <span class="truncate">
+                            {{ this.residence_form.get('residence_from_date')?.value | date : undefined : undefined :
+                            "en-US" }}
+                        </span>
+                        <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path
+                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            }
+
+            @if( (trip_type_selected_id == '1' || trip_type_selected_id == '3') && residence_type_selected_id == 1){
+            <div [formGroup]="residence_form">
+                <label class="text-[#878CBD]" for="from_date">تاريخ دخول الفندق</label>
+                <app-date-picker [minDate]="getNextDay(open_going_trip_selected.departureTime)"
+                    [maxDate]="open_return_trip_selected.returnTime ? open_return_trip_selected.returnTime : undefined"
+                    (dateChange)="set_min_return_date()" formControlName="residence_from_date"
+                    [placeholder]="'تاريخ دخول الفندق'"></app-date-picker>
+            </div>
+            }
+            <!-- ############## end added by shaaban ########### -->
+
+
+
+            @if(trip_type_selected_id != '4' && trip_type_selected_id != '1' && trip_type_selected_id != '3' &&
+            residence_type_selected_id == 1){
+            <div>
+                <label class="text-[#878CBD]" for="to_date">تاريخ العودة من الفندق</label>
+                <div class="relative w-[300px] mt-2">
+                    <input type="date" class="absolute inset-0 opacity-0 z-10" readonly />
+                    <div class="flex items-center justify-between bg-[#F9F9F9] rounded-[12px] px-4 py-2 text-[#878CBD] z-0 pointer-events-none"
+                        style="padding: 0.875rem;">
+                        <span class="truncate">
+                            {{ this.residence_form.get('residence_to_date')?.value | date : undefined : undefined :
+                            "en-US" }}
+                        </span>
+                        <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path
+                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        <!-- بيانات التسكين -->
+        <!-- اظهار في حالة التسكين او سكن مع الرحلة -->
+        @if(trip_type_selected_id == '4' || residence_type_selected_id == 1){
+        <form [formGroup]="residence_form" class="flex flex-wrap gap-5 my-5">
+
+            <!-- <div class="date_input">
+                <input #residence_from_date_input [attr.min]="tomorrow_date" type="date" name="residence_from_date" id="residence_from_date"
+                    formControlName='residence_from_date' placeholder="تاريخ الذهاب إلى الفندق">
+                <button>
+                    <span>{{residence_from_date_input.value ? residence_from_date_input.value : 'تاريخ الذهاب إلى الفندق'}}</span>
+                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path
+                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                    </svg>
+                </button>
+            </div> -->
+            <!-- <div class="date_input">
+                <input #residence_to_date_input [attr.min]="tomorrow_date" type="date" name="residence_to_date" id="residence_to_date"
+                     formControlName='residence_to_date' placeholder="تاريخ العودة من الفندق">
+                <button>
+                    <span>{{residence_to_date_input.value ? residence_to_date_input.value : 'تاريخ العودة من الفندق'}}</span>
+                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path
+                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                    </svg>
+                </button>
+            </div> -->
+
+            @if(trip_type_selected_id == '4'){
+            <app-date-picker [minDate]="tomorrow_date" formControlName="residence_from_date"
+                (dateChange)="set_min_return_date()" [placeholder]="'تاريخ دخول الفندق'"></app-date-picker>
+            <!-- <div class="relative w-[300px]" (click)="openDatePicker(residence_from_date_input)">
+                    <input #residence_from_date_input [attr.min]="tomorrow_date" type="date" formControlName="residence_from_date"
+                        class="absolute inset-0 opacity-0 cursor-pointer z-10" (change)="set_min_return_date()"/>
+                
+                    <div class="flex items-center justify-between bg-[#F9F9F9] rounded-[12px] px-4 py-2 text-[#878CBD] z-0 pointer-events-none"
+                        style="padding: 0.875rem;">
+                        <span class="truncate">
+                            {{ residence_from_date_input?.value || 'تاريخ دخول الفندق' }}
+                        </span>
+                        <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                        </svg>
+                    </div>
+                </div> -->
+            }
+
+
+            @if((trip_type_selected_id == '1' || trip_type_selected_id == '4') && min_return_date){
+            <app-date-picker [minDate]="min_return_date" formControlName="residence_to_date"
+                [placeholder]="'تاريخ العودة من الفندق'"></app-date-picker>
+            <!-- <div class="relative w-[300px]" (click)="openDatePicker(residence_to_date_input)">
+                <input #residence_to_date_input [attr.min]="min_return_date" type="date" formControlName="residence_to_date"
+                    class="absolute inset-0 opacity-0 cursor-pointer z-10" />
+            
+                <div class="flex items-center justify-between bg-[#F9F9F9] rounded-[12px] px-4 py-2 text-[#878CBD] z-0 pointer-events-none"
+                    style="padding: 0.875rem;">
+                    <span class="truncate">
+                        {{ residence_to_date_input?.value || 'تاريخ العودة من الفندق' }}
+                    </span>
+                    <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                    </svg>
+                </div>
+                </div> -->
+            }
+
+            <!-- ######################## start added by shaaban ############################ -->
+            @if(trip_type_selected_id == '3'){
+            <app-date-picker [minDate]="getNextDay(open_going_trip_selected.departureTime)"
+                [maxDate]="open_return_trip_selected.returnTime" formControlName="residence_to_date"
+                [placeholder]="'تاريخ العودة من الفندق'"></app-date-picker>
+            }
+            <!-- ######################## end added by shaaban ############################ -->
+
+            <select formControlName='stay_type' class="crud_input" name="stay_type">
+                <option selected value=null>اختر نوع الإقامة</option>
+                @for(stay_type of stay_types ; track stay_type.id){
+                <option [value]="stay_type.id">{{stay_type.name}}</option>
+                }
+            </select>
+            <select formControlName='hotel_id' class="crud_input" name="hotel" (change)="get_reserved_rooms()">
+                <option selected value=null>اختر الفندق</option>
+                @for(hotel of all_hotels ; track hotel.id){
+                <option [value]="hotel.id">{{hotel.name}}</option>
+                }
+            </select>
+            @if(reserved_data_in_trip_per_hotel.tripCode){
+            <input type="text" class="crud_input" readonly
+                [value]="' | كود الرحلة: ' + reserved_data_in_trip_per_hotel.tripCode" />
+            <input type="text" class="crud_input" readonly
+                [value]="' | السراير المحجوزة: ' + reserved_data_in_trip_per_hotel.totalReservedBeds" />
+            <input type="text" class="crud_input" readonly
+                [value]="' | الغرف المحجوزة: ' + reserved_data_in_trip_per_hotel.totalReservedRooms" />
+            }
+            @if(no_hotels_tickets_for_this_trip){
+            <input type="text" class="crud_input w-[300px]" [value]="no_hotels_tickets_for_this_trip_msg" readonly>
+            }
+            <select formControlName='unit_type' class="crud_input" name="unit_type">
+                <option selected value=null>طريقة الحجز</option>
+                @for(unit_type of accommodation_unit_type ; track unit_type.id){
+                <option [value]="unit_type.id">{{unit_type.name}}</option>
+                }
+            </select>
+            <!-- @if(residence_form.get('unit_type')?.value == '2'){
+            <div class="w-full">
+                <div class="flex items-center justify-between mb-4">
+                    <h5 class="text-lg font-semibold">تفاصيل الغرف</h5>
+                    <button type="button" (click)="add_room()" class="shared_btn_style secondry_btn">إضافة غرفة</button>
+                </div>
+
+                <div formArrayName="rooms" class="space-y-4">
+                    @for(room of rooms.controls; track $index; let i = $index) {
+                    <div [formGroupName]="i" class="flex flex-wrap gap-4 p-4 border border-gray-200 rounded-lg">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-medium">غرفة {{i + 1}}:</span>
+                        </div>
+
+                        <input formControlName="bedsCount" type="number" class="crud_input"
+                            placeholder="عدد السراير في الغرفة" min="1">
+
+                        <input formControlName="roomsCount" type="number" class="crud_input"
+                            placeholder="عدد الغرف من هذا النوع" min="1">
+
+                        @if(rooms.controls.length > 1) {
+                        <button type="button" (click)="remove_room(i)" class="delete_btn" title="حذف الغرفة">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        }
+
+                        @if(room.get('bedsCount')?.errors?.['required'] && room.get('bedsCount')?.touched){
+                        <span class="valid_alert w-full">عدد السراير مطلوب</span>
+                        }
+                        @if(room.get('bedsCount')?.errors?.['min']){
+                        <span class="valid_alert w-full">يجب أن يكون عدد السراير أكبر من 0</span>
+                        }
+                        @if(room.get('roomsCount')?.errors?.['required'] && room.get('roomsCount')?.touched){
+                        <span class="valid_alert w-full">عدد الغرف مطلوب</span>
+                        }
+                        @if(room.get('roomsCount')?.errors?.['min']){
+                        <span class="valid_alert w-full">يجب أن يكون العدد أكبر من 0</span>
+                        }
+                    </div>
+                    }
+                </div>
+
+                <div class="mt-4 p-3 bg-gray-100 rounded-lg">
+                    <span class="text-sm font-medium">إجمالي الغرف: {{get_total_rooms_count()}}</span>
+                </div>
+            </div>
+            } -->
+
+            @if(residence_form.get('unit_type')?.value == '2'){
+            <div class="w-full">
+                <div class="flex items-center justify-between mb-4">
+                    <h5 class="text-lg font-semibold" style="color: #b50d0d;">تفاصيل الغرف</h5>
+                </div>
+
+                <div class="flex flex-wrap gap-[20px] my-3">
+                    @for(roomType of room_types; track roomType.id; let i = $index) {
+                    <div class="flex flex-wrap gap-4 border border-gray-200 rounded-lg">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-medium">{{roomType.name}}:</span>
+                        </div>
+
+                        <input type="number" class="crud_input" style="width: 200px; padding: 10px;" [value]="roomTypeCounts[roomType.id] || null"
+                            (input)="updateRoomTypeCount(roomType.id, $event)" placeholder="عدد الغرف" min="0" max="50">
+                    </div>
+                    }
+                </div>
+
+                <div class="mt-4 p-3 bg-gray-100 rounded-lg">
+                    <span class="text-sm font-medium">إجمالي الغرف: {{getTotalRoomsCount()}}</span>
+                </div>
+            </div>
+            }
+
+            <!-- @if(residence_form.get('unit_type')?.value == '2'){
+                <div class="flex flex-col gap-1 relative">
+                  <input id="room_count" class="crud_input h-[52px]" type="text" maxlength="1" formControlName="room_count" placeholder="عدد الغرف">
+                  @if(residence_form.get('room_count')?.errors?.['required'] && residence_form.get('room_count')?.touched){
+                    <span class="valid_alert">هذا الحقل مطلوب</span>
+                  }
+                  @if(residence_form.get('room_count')?.errors?.['min']){
+                    <span class="valid_alert">يجب أن يكون العدد أكبر من 0</span>
+                  }
+                </div>
+                <div class="flex flex-col gap-1 relative">
+                  <input id="bed_count" class="crud_input h-[52px]" type="text" maxlength="1" formControlName="bed_count" placeholder="عدد السراير في كل غرفة">
+                  @if(residence_form.get('bed_count')?.errors?.['required'] && residence_form.get('bed_count')?.touched){
+                    <span class="valid_alert">هذا الحقل مطلوب</span>
+                  }
+            </div>
+            } -->
+            @if(residence_form.get('unit_type')?.value == '1'){
+            <div class="flex flex-col gap-1 relative">
+                <input id="bed_count" class="crud_input" type="number" placeholder="عدد السراير في كل غرفة"
+                    [value]="users.length" readonly>
+            </div>
+            }
+
+
+        </form>
+        }
+        @else if(residence_type_selected_id == 2){
+        <input class="crud_input w-full text-center p-5 text-[18px] my-3" type="text" name="user_last_name"
+            value="الحجز بدون سكن" readonly>
+        }
+
+    </div>
+    }
+    <!-- step 4 -->
+    @if(active_step == 4){
+    <div class="step_4">
+        <h4 class="step_title"><span><i class="fa-solid fa-hotel"></i></span> بيانات الدفع</h4>
+        <app-show-reservation [reservation_details]="reservation_data"
+            (total_paid_for_reservation)="get_remaining_cost($event)"
+            (notes_for_reservation)="get_notes($event)"></app-show-reservation>
+    </div>
+    }
+
+    <!-- ازرار السابق والتالي -->
+    <div class="mt-10 flex">
+        @if(active_step > 1){
+        <button (click)="go_to_step(active_step - 1)" title="السابق"
+            class="shared_btn_style secondry_btn me-auto">السابق</button>
+        }
+        @if(active_step < list_titles.length){ <button #next_btn (click)="go_to_step(active_step + 1)" title="التالي"
+            class="shared_btn_style thirdry_btn ms-auto">
+            @if(!next_step_loading){
+            التالي
+            }
+            @else {
+            <span><i class="fa-solid fa-spinner fa-spin"></i></span>
+            }
+            </button>
+            }
+            @if(active_step == 4){
+            <button (click)="confirm_reservation()" title="تأكيد الحجز"
+                class="shared_btn_style thirdry_btn ms-auto">تأكيد الحجز</button>
+            }
+    </div>
+</section>
+
+<!-- show_reservation_details deleteeeeeeeeeee -->

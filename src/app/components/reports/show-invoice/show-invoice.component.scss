@@ -1,0 +1,195 @@
+@page {
+    size: A4 !important;
+    margin: 0;
+}
+
+
+:host {
+    font-family: 'Cairo', sans-serif;
+    direction: rtl;
+    width: 197mm !important;
+    // min-height: 297mm !important;
+    margin: 0 auto;
+    padding: 10mm;
+    box-sizing: border-box;
+    background-color: white;
+    color: #333;
+    display: block;
+}
+
+.page {
+    // width: 100%;
+    // min-height: 277mm;
+    font-size: 18px;
+    border: 1px solid #ddd;
+    min-height: 282mm !important;
+    position: relative;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    border-bottom: 2px solid #4f46e5;
+    padding: 10px 20px;
+    background-color: #f8fafc;
+}
+
+.footer {
+    border-top: 2px solid #4f46e5;
+    padding: 10px 20px;
+    background-color: #f8fafc;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.section {
+    margin: 15px 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #ddd;
+}
+
+.section-title {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+    padding: 5px 15px;
+    border-radius: 5px;
+    margin-bottom: 7px;
+    font-weight: 700;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #f1f5f9;
+    padding: 2px 7px;
+    text-align: right;
+    border: 1px solid #ddd;
+}
+
+td {
+    padding: 2px 7px;
+    border: 1px solid #ddd;
+}
+
+.alerts {
+    font-size: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.qr-code {
+    position: absolute;
+    bottom: 100px;
+    left: 20px;
+    width: 160px;
+    height: 145px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+}
+
+.amount-box {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 6px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.amount-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+}
+
+.amount-label {
+    font-weight: 600;
+}
+
+.total-amount {
+    font-weight: 650;
+    color: #065f46;
+    font-size: 1.0em;
+}
+
+
+// ======================
+
+.payment-input {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 150px;
+    text-align: center;
+    direction: rtl;
+    font-family: inherit;
+}
+
+.confirm-btn {
+    background-color: #4f46e5;
+    color: white;
+    padding: 6px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.confirm-btn:hover {
+    background-color: #4338ca;
+}
+
+
+button:disabled {
+    background-color: #aecab0;
+    cursor: not-allowed;
+}
+
+
+// ======================
+
+
+
+.disabled-btn{
+    opacity: 0.5;
+    cursor: default;
+    &:hover {
+        box-shadow: none !important;
+    }
+}
+
+
+
+
+
+
+@media print {
+    // body {
+    //     width: 210mm;
+    //     height: 297mm;
+    // }
+
+    :host {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .paying-div{
+        display: none;
+    }
+
+    .full-paid-div{
+        padding-block: 4px !important;
+    }
+    // .page {
+    //     border: none;
+    //     box-shadow: none;
+    // }
+}

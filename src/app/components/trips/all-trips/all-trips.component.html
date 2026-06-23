@@ -1,0 +1,175 @@
+<div class="all_table relative overflow-x-auto">
+
+    <!-- <form [formGroup]="trip_search_form" class="max-w-md mx-6 mb-10">
+        <div class="relative">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                </svg>
+            </div>
+            <input type="search" formControlName="search_code" id="default-search"
+                class="crud_input block w-full p-4 ps-10" placeholder="ابحث هنا ...." required />
+            <button (click)="get_all_search_trips()" type="button"
+                class="text-white absolute end-2.5 bottom-2.5 px-3 py-2 thirdry_bg rounded-xl"> بحث </button>
+            
+        </div>
+    </form> -->
+
+    <form class="  mb-10  w-full" [formGroup]="trip_search_form" (ngSubmit)="get_all_search_trips()">
+        <!-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only">ابحث هنا ....</label> -->
+        <div class="flex gap-4 items-center  w-full ">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                </svg>
+            </div>
+            <input type="search" id="default-search" formControlName="search_code"
+                class="crud_input block 2xl:w-[230px] xl:w-[200px] p-4 " placeholder="ابحث هنا ...." />
+
+            <input type="date" id="default-search" formControlName="fromDate"
+                class="crud_input block 2xl:w-[230px] xl:w-[200px] p-4 " placeholder="ابحث من تاريخ ...." />
+
+            <input type="date" id="default-search" formControlName="toDate"
+                class="crud_input block 2xl:w-[230px] xl:w-[200px] p-4 " placeholder="ابحث إلى تاريخ ...." />
+
+            <div class=" flex gap-2 items-center ps-3">
+                <button type="submit" class="text-white  px-3 py-2 thirdry_bg rounded-xl">بحث</button>
+                @if(trip_search_form.value.search_code || trip_search_form.value.fromDate ||
+                trip_search_form.value.toDate){
+                <button type="button" (click)="cancel_search()"
+                    class="text-white  px-3 py-2 main_bg rounded-xl">الغاء</button>
+                }
+            </div>
+
+            <div class="flex items-start ps-1 flex-col">
+                <label for="search_mode1" class="relative inline-flex items-center cursor-pointer mr-2">
+                    <input type="radio" [checked]="search_mode == 'createdOn'" class="border-2 border-gray-400 me-2"
+                        name="search_mode" id="search_mode1" (change)="search_mode = 'createdOn'">
+                    <span class="ml-3 text-sm font-medium text-gray-900">تاريخ الاضافة</span>
+                </label>
+                <label for="search_mode2" class="relative inline-flex items-center cursor-pointer mr-2">
+                    <input type="radio" [checked]="search_mode == 'fromdate'" class="border-2 border-gray-400 me-2"
+                        name="search_mode" id="search_mode2" (change)="search_mode = 'fromdate'">
+                    <span class="ml-3 text-sm font-medium text-gray-900">من - الى</span>
+                </label>
+            </div>
+
+
+        </div>
+        @if(search_value || fromDate_search || toDate_search){
+        <div class="flex justify-start pt-1 text-gray-600 text-sm ">
+            عرض نتائج البحث : {{search_value}}
+            @if(fromDate_search){
+            {{search_mode == 'fromdate' ? 'من' : 'تاريخ الاضافة'}}
+
+            ({{fromDate_search}}) }
+
+            @if(toDate_search){
+            - ({{toDate_search}}) }
+
+        </div>
+        }
+    </form>
+
+    <table class="w-full text-sm text-left rtl:text-right">
+        <thead class="crud_head_titles">
+            <tr>
+                @for(title of table_head_titles ; track $index) {
+                <th scope="col" class="px-2 py-3 text-center">
+                    {{title}}
+                </th>
+                }
+                <th scope="col" class="px-2 py-3 text-center">
+                    الاعدادات
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @for(trip of all_trips ; track $index) {
+            <tr class="crud_body_data border-t">
+                <td class="px-2 py-4 text-center">
+                    {{$index+1}}
+                </td>
+                <td class="px-2 py-4 text-center">
+                    {{trip.tripCode}}
+                </td>
+
+                <td class="px-4 py-4 text-center text-gray-500">
+                    {{ trip.createdOn | date: 'yyyy-MM-dd - hh:mm' }} {{trip.createdOn | date: 'a' :
+                    '' : 'ar-EG'}}
+                </td>
+                <td class="px-2 py-4 text-center">
+                    <span class=" min-w-28 inline-block font crud_body_secondry_color">
+                        @if(trip.transitCity){
+                        <span>{{trip.transitCity | enum : 'city'}} </span>
+                        <i class="fa-solid fa-location-dot px-[1px]"></i>
+                        }
+                        {{trip.toCity | enum :'city'}} </span>
+                    <!-- <i class="fa-solid fa-left-long pe-7"></i> -->
+                    <!-- <span>{{trip.toCity | enum : 'city'}} </span> -->
+                </td>
+
+                <td class="px-2 py-4 text-center ">
+                    <span class="crud_body_secondry_color inline-block text-[14px]"> {{trip.departureTime | date :
+                        'yyyy-MM-dd (EEEE)' :"" :"ar-EG"}} </span>
+                    <span> <i class=" px-2 fa-solid fa-caret-left"></i> </span>
+                    <span class="text-[14px]"> {{trip.returnTime | date : 'yyyy-MM-dd (EEEE)' :"" :"ar-EG"}} </span>
+                </td>
+
+                <td class="px-2 py-4 text-center">
+                    {{ trip.departureReservedChairs ? (trip.numberOfChairs -
+                    trip.departureReservedChairs.split(",").length) : trip.numberOfChairs  }}
+
+                    @if(trip.transitCity){
+                   | {{ trip.transitReservedChairs ? (trip.numberOfChairs -
+                    trip.transitReservedChairs.split(",").length) : trip.numberOfChairs  }}
+                    }
+
+                   | {{ trip.returnReservedChairs ? (trip.numberOfChairs -
+                    trip.returnReservedChairs.split(",").length) : trip.numberOfChairs }}
+                    @if (trip.busType > 3 && trip.busType != 8) {
+                    <span class="p-1 rounded-md bg-slate-50 border-yellow-500 border" title="VIP">
+                        <i class="fa-solid fa-crown" style="color: #fbc604;"></i>
+                    </span>
+                    }
+                </td>
+
+                <td class="px-2 py-4 text-center">
+                    <button (click)="book_this_trip(trip.id)"
+                        class="crud_icon thirdry_btn text-sm text-white px-3 py-2 rounded-xl ">
+                        احجز الآن
+
+                    </button>
+                </td>
+
+                <td class="px-2  py-4 flex items-center justify-center gap-4">
+                    <!-- <span class="crud_icon edit_icon_color"><i class="fa-regular fa-download"></i></span> -->
+                    <!-- <span (click)="downloadPdf(trip.id)" class="crud_icon edit_icon_color"><i
+                            class="fa-solid fa-file-arrow-down"></i></span> -->
+
+                    <span (click)="save_trip(trip)" class="crud_icon  show_icon_color">
+                        <i class="fa-regular fa-pen-to-square  opacity-60"></i></span>
+                    <!-- <span (click)="show_cant_edit_alert()" class="crud_icon  show_icon_color">
+                        <i class="fa-regular fa-pen-to-square cursor-not-allowed opacity-60"></i></span> -->
+
+                    <span (click)="show_delete_alert(trip.tripCode , trip.id)" class="crud_icon delete_icon_color ">
+                        <i class="fa-solid fa-trash shadow-red-600 "></i></span>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<!-- 
+<app-confirm-popup [onConfirm]="delete_trip" message="هل ترغب في ازالة هذه الرحلة نهائياً ؟"
+    [item_name]="current_name"></app-confirm-popup> -->

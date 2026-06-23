@@ -1,0 +1,110 @@
+<div class="all_table relative  overflow-x-auto">
+
+    <div class="max-w-md mx-6 mb-10">
+        <h5 class="font-semibold text-[1.5rem]">اضافة فندق جديد</h5>
+    </div>
+
+    <div class="w-full text-sm text-left rtl:text-right">
+        <form [formGroup]="hotel_form" class="p-4 md:p-5">
+            <div class="grid gap-4 gap-x-10 py-8 px-4 mb-4 grid-cols-4">
+
+                <!-- First Name -->
+                <div class="lg:col-span-2 md:col-span-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">الاسم الفندق</label>
+                    <input (blur)="onTrimSpacesInput($event, 'name')" type="text" formControlName="name" maxlength="20"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="ادخل اسم الفندق">
+                    @if (hotel_form.get('name')?.touched && hotel_form.get('name')?.invalid) {
+                    @if (hotel_form.get('name')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">هذا الحقل مطلوب*</span>
+                    }
+                    @if (hotel_form.get('name')?.errors?.['maxlength']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يكون الاسم صالحاً بحد اقصى 25 حرف</span>
+                    }
+                    }
+                </div>
+
+
+                <!-- the city of hotel -->
+                <div class="lg:col-span-2 md:col-span-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">المدينة</label>
+                    <select formControlName="place"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600">
+                        <option [ngValue]="null" disabled selected>اختر المدينة</option>
+                        @for (city of all_city; track $index) {
+                        <option [ngValue]="city">{{city| enum :"city"}}</option>
+                        }
+                    </select>
+                    @if (hotel_form.get('place')?.touched && hotel_form.get('place')?.invalid) {
+                    <span class=" px-2 text-xs text-red-600 mt-1 block">يرجى اختيار المدينة الموجود بها الفندق* </span>
+                    }
+                </div>
+
+                <!-- hotel adress ID -->
+                <div class="lg:col-span-2 md:col-span-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">عنوان الفندق</label>
+                    <input (blur)="onTrimSpacesInput($event, 'address')" type="text" formControlName="address" maxlength="30"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600"
+                        placeholder="ادخل عنوان الفندق">
+                    @if (hotel_form.get('address')?.touched && hotel_form.get('address')?.invalid) {
+                    @if (hotel_form.get('address')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block"> يجب ادخال عنوان الفندق* </span>
+                    }
+                    @if (hotel_form.get('address')?.errors?.['maxlength']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن يتكون العنوان صالحاً بحد اقصى 30
+                        حرفاً</span>
+                    }
+                    }
+                </div>
+
+
+
+                <!-- hotel bedPrice -->
+                <div class="lg:col-span-1 md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> السعر الافتراضي
+                        للسرير</label>
+                    <input type="text" (input)="onPriceInputBed($event)" formControlName="bedPrice" maxlength="3"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600"
+                        placeholder=" سعر السرير بالفندق">
+                    @if (hotel_form.get('bedPrice')?.touched && hotel_form.get('bedPrice')?.invalid) {
+                    @if (hotel_form.get('bedPrice')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">ادخل سعر السرير بالفندق*</span>
+                    }
+                    @if (hotel_form.get('bedPrice')?.errors?.['pattern']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن السعر صالحاً بحد اقصى 3 ارقام</span>
+                    }
+                    }
+                </div>
+
+                <!-- hotel roomPrice -->
+                <div class="lg:col-span-1 md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> السعر الافتراضي
+                        للغرفة</label>
+                    <input type="text" (input)="onPriceInputRoom($event)" formControlName="roomPrice" maxlength="4"
+                        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-4 bg-gray-50/50 dark:bg-gray-600"
+                        placeholder=" سعر الغرفة بالفندق">
+                    @if (hotel_form.get('roomPrice')?.touched && hotel_form.get('roomPrice')?.invalid) {
+                    @if (hotel_form.get('roomPrice')?.errors?.['required']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">ادخل سعر الغرفة بالفندق*</span>
+                    }
+                    @if (hotel_form.get('roomPrice')?.errors?.['pattern']) {
+                    <span class="px-2 text-xs text-red-600 mt-1 block">يجب أن السعر صالحاً بحد اقصى 4 ارقام</span>
+                    }
+                    }
+                </div>
+
+
+            </div>
+            <button (click)="submit_form()" type="submit" class="shared_btn_style secondry_btn" title="إضافة عميل">
+                إضافة
+                <span><i class="fa-solid fa-plus"></i></span>
+            </button>
+
+
+
+
+        </form>
+    </div>
+
+
+</div>

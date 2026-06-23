@@ -1,0 +1,134 @@
+// date-picker.component.scss
+
+:host {
+  display: block;
+  position: relative;
+}
+
+// تحسينات إضافية للتصميم
+.calendar-dropdown {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  // تأثير الظهور
+  animation: slideDown 0.2s ease-out;
+  transform-origin: top;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.date_number_btn {
+  border-radius: 50%;
+
+  &:hover {
+    background-color: #878cbda9;
+    color: white;
+  }
+}
+.selected_bg {
+  background-color: #878CBD;
+  color: white;
+  border-radius: 50%;
+}
+// تحسين شكل الأزرار
+// button {
+//   &:focus {
+//     outline: 2px solid #3b82f6;
+//     outline-offset: 2px;
+//   }
+  
+//   &:active {
+//     transform: scale(0.98);
+//   }
+// }
+
+// تحسين شكل الـ input
+// input {
+//   &:focus {
+//     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+//   }
+  
+//   &::placeholder {
+//     color: #9ca3af;
+//     font-style: italic;
+//   }
+// }
+
+// تحسين الأيام المحددة
+.day-selected {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  transform: scale(1.05);
+  
+  &:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af) !important;
+  }
+}
+
+// تحسين اليوم الحالي
+.day-today {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background-color: #3b82f6;
+    border-radius: 50%;
+  }
+}
+
+// تحسين الأيام المعطلة
+.day-disabled {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background-color: #ef4444;
+    transform: translateY(-50%);
+  }
+}
+
+.today_btn {
+  background-color: #878CBD;
+  color: white;
+  border-radius: 8px;
+}
+// تحسين responsive design
+@media (max-width: 640px) {
+  .calendar-dropdown {
+    width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+// تحسين accessibility
+@media (prefers-reduced-motion: reduce) {
+  .calendar-dropdown {
+    animation: none;
+  }
+  
+  button {
+    &:active {
+      transform: none;
+    }
+  }
+}

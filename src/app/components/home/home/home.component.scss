@@ -1,0 +1,23 @@
+$main_border_radius: 12px;
+
+
+.all_sec1 {
+    // background-color: #F7FAFC;
+    padding: 1.5rem;
+    border-radius: $main_border_radius;
+}
+
+
+.all_table1 {
+    // background-color: #ffffff;
+    box-shadow: 0px 4px 20px 0px #EEEEEE80;
+    border-radius: 20px;
+    padding: 2rem 1rem;
+    padding: 2rem 1rem;
+    margin: 2rem 0;
+}
+
+h2, h3,h4,h5,h6,p{
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+}

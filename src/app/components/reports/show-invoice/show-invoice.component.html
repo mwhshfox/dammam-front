@@ -1,0 +1,349 @@
+<!-- <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فاتورة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body> -->
+<div class="page pb-10">
+    <!-- Header Section -->
+    <div class="header">
+        <div class="flex justify-between items-center">
+
+            <!-- <div style="text-align: center;"> -->
+            <h1 class="text-2xl font-bold py-3 text-indigo-600">تسوية فاتورة</h1>
+            <h1 class="text-2xl font-bold py-3 text-indigo-600">{{reservation.invoiceNumber || '-'}}</h1>
+            <!-- </div> -->
+
+        </div>
+    </div>
+
+    <!-- Customer Information Section -->
+    <div class="section">
+        <div class="section-title">بيانات العملاء</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>الإسم</th>
+                    <th>رقم الهاتف</th>
+                    <th>رقم الهوية</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (customer of all_users; track $index) {
+                <tr>
+                    <td>{{ customer.customer.fullName }}</td>
+                    <td>{{ customer.customer.phoneNumber }}</td>
+                    <td>{{ customer.customer.nationalityId }}</td>
+                </tr>
+                }
+
+
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+
+    <!-- Payment Details Section -->
+    <div class="section" style="border-bottom: none;">
+        <div class="section-title">سجل الدفعات</div>
+
+        <div class="amount-box">
+            <!-- 
+            <div class="amount-row ">
+                <div class="">
+                    <span class="amount-label">{{reservation.createdOn | date : 'yyyy-MM-dd hh:mm'}}
+                        {{reservation.createdOn |
+                        date : 'a' : '' : 'ar'}} - </span>
+                    <span class="amount-label text-[13px]">{{emp_created_reservation_name}}</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="amount-label text-[13px]"> ( {{reservation.paymentMethod | enum : 'PaymentMethod'}} - فاتورة الحجز  ) -
+                    </span>
+                    <span class="total-amount ps-1">
+                        {{reservation.initMoneyPaid}}
+                        <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
+                            width="17" height="17" fill="currentColor" viewBox="0 0 1124.14 1256.39">
+                            <path
+                                d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                            <path
+                                d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                        </svg>
+                    </span>
+                </div>
+            </div> -->
+
+            @for (payment of all_payment_history; track $index) {
+            <!-- <div class="amount-row">
+                <span class="amount-label">{{payment.createdOn}}</span>
+                <span>{{ payment.moneyPaid }} ر.س</span>
+            </div> -->
+            <!-- <div class="amount-row">
+                <span class="amount-label">المبلغ المدفوع:</span>
+                <span> <span class="text-[15px]">({{reservation.paymentMethod | enum : 'PaymentMethod'}}) - </span> {{
+                    reservation.moneyPaid }} ر.س </span>
+
+            </div> -->
+            <div class="amount-row ">
+                <div class="">
+                    <span class="amount-label">{{payment.createdOn | date : 'yyyy-MM-dd hh:mm'}} {{payment.createdOn |
+                        date : 'a' : '' : 'ar'}} - </span>
+                    <span class="amount-label text-[13px]">{{payment.employeeName}}</span>
+
+                    @if(is_admin && reservation.qoyodInvoiceId && payment.moneyPaid > 0){
+                    <div class=" items-center gap-2 ps-2 text-[12px] inline-flex">
+                        <button [class.disabled-btn]="payment.qoyodPaymentId"
+                            (click)="export_qiod_payment(payment.id , payment.qoyodPaymentId , $index)"
+                            class="crud_icon thirdry_btn bg-qiod1 text-sm text-white px-2 py-1 rounded-md min-w-[88px] ">
+                            {{payment.qoyodPaymentId ? 'سند مسجل' : 'تصدير سند'}}
+                        </button>
+                    </div>
+                    }
+                </div>
+                <div class="flex items-center">
+
+
+
+
+
+                    <span class="amount-label text-[13px]"> ( {{payment.paymentMethod | enum : 'PaymentMethod'}}
+                        {{$index == 0 ? ' - فاتورة الحجز' : ''}}
+                        ) -
+                    </span>
+                    <span class="total-amount ps-1">
+                        {{payment.moneyPaid}}
+                        <!-- <img src="media/Saudi_Riyal_Symbol-2.svg" alt=""> -->
+                        <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
+                            width="17" height="17" fill="currentColor" viewBox="0 0 1124.14 1256.39">
+                            <path
+                                d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                            <path
+                                d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                        </svg>
+                    </span>
+
+
+
+
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+    <!-- Payment Details Section -->
+    <div class="section" style="border-bottom: none;">
+        <div class="section-title">تفاصيل الدفع</div>
+        <div class="amount-box">
+            <div class="amount-row">
+                <span class="amount-label">المبلغ الإجمالي:</span>
+                <span>{{ reservation.totalInvoice }}
+                    <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
+                        width="17" height="17" fill="currentColor" viewBox="0 0 1124.14 1256.39">
+                        <path
+                            d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                        <path
+                            d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                    </svg></span>
+            </div>
+            <div class="amount-row">
+                <span class="amount-label">المبلغ المدفوع:</span>
+                <span> <span class="text-[15px]">({{reservation.paymentMethod | enum : 'PaymentMethod'}}) - </span> {{
+                    reservation.moneyPaid }}
+
+                    <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
+                        width="17" height="17" fill="currentColor" viewBox="0 0 1124.14 1256.39">
+                        <path
+                            d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                        <path
+                            d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                    </svg>
+                </span>
+
+            </div>
+
+            <div class="amount-row total-amount">
+                <span>المبلغ المتبقي:</span>
+                <span>{{ reservation.totalInvoice - reservation.moneyPaid }}
+
+                    <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
+                        width="17" height="17" fill="currentColor" viewBox="0 0 1124.14 1256.39">
+                        <path
+                            d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                        <path
+                            d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                    </svg>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="section ">
+        <div class="section-title">سداد الدفعات</div>
+        <div class="amount-box">
+        </div>
+    </div> -->
+
+
+    <!-- Payment Settlement Section -->
+    <div class="section">
+
+        @if(reservation.totalInvoice == reservation.moneyPaid){
+        <div class="bg-gray-50 border p-3 rounded ">
+            <div class="flex justify-center items-center font-bold text-green-700 py-5 text-lg full-paid-div">
+                <span>تم السداد بالكامل</span>
+                <i class="fa-solid fa-check-to-slot fa-lg px-2"></i>
+            </div>
+        </div>
+        }
+        @else{
+        <div class="section-title paying-div">إجراء دفعة جديدة</div>
+
+
+
+        <!-- <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()" class="amount-box">
+
+            <div class="amount-row">
+                <label class="amount-label" for="amount">أدخل مبلغ الدفع الجديد:</label>
+                <input type="number" id="amount" formControlName="amount" placeholder="مثلاً: 100"
+                    class="payment-input" />
+            </div>
+
+            @if (paymentForm.get('amount')?.valid) {
+            <div class="amount-row">
+                <span class="amount-label">اجمالي المدفوع (بعد التسوية):</span>
+                <span>{{ newPaid.toFixed(2) }} ر.س</span>
+            </div>
+            }
+
+            @if (paymentForm.get('amount')?.valid) {
+            <div class="amount-row total-amount">
+                <span>المبلغ المتبقي بعد الدفع (الجديد):</span>
+                <span>{{ remainingAfter.toFixed(2) }} ر.س</span>
+            </div>
+            }
+
+            <div class="amount-row" style="justify-content: flex-end;">
+                <button type="submit" class="confirm-btn" [disabled]="paymentForm.invalid">تأكيد الدفع</button>
+            </div>
+
+        </form> -->
+
+
+        <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()" class="space-y-4">
+
+            <!-- حقل مبلغ السداد -->
+            <div class="paying-div">
+                <label class="block font-semibold text-gray-700 mb-1">قيمة السداد</label>
+                <div class=" flex gap-3">
+                    <input type="number" formControlName="amount" class="border p-2 rounded w-3/4" [max]="remaining"
+                        step="0.01" min="0.01" />
+                    <select name="" id="" class="w-1/4" formControlName="paymentMethod">
+                        <option [value]="null" selected disabled>اختر طريقة الدفع</option>
+                        <option [ngValue]="1">كاش</option>
+                        <option [ngValue]="2">تحويل</option>
+                        <option [ngValue]="3">شبكة</option>
+                        <option [ngValue]="4">خصم</option>
+                    </select>
+                </div>
+
+                <!-- رسالة تنبيه عند تجاوز المبلغ -->
+                <div *ngIf="paymentForm.get('amount')?.touched && paymentForm.get('amount')?.value > remaining"
+                    class="text-red-600 text-sm mt-1">
+                    لا يمكن سداد مبلغ أكبر من المتبقي ({{ remaining }} ر.س).
+                </div>
+
+                <!-- رسالة تنبيه عند عدم اختيار طريقة الدفع -->
+                <div *ngIf="paymentForm.get('paymentMethod')?.touched && paymentForm.get('paymentMethod')?.value == null"
+                    class="text-red-600 text-sm mt-1">
+                    يجب اختيار طريقة الدفع.
+                </div>
+
+                <!-- رسالة خطأ للـ validation -->
+                <div *ngIf="paymentForm.get('amount')?.hasError('required') && paymentForm.get('amount')?.touched"
+                    class="text-red-600 text-sm mt-1">
+                    يجب إدخال مبلغ السداد.
+                </div>
+            </div>
+
+            <!-- معلومات بعد السداد -->
+            <div class="bg-gray-50 border p-3 rounded paying-div">
+                <div class="flex justify-between mb-1">
+                    <span>اجمالي الفاتورة:</span>
+                    <span>{{ totalAmount }}
+                        <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
+                            width="17" height="17" fill="currentColor" viewBox="0 0 1124.14 1256.39">
+                            <path
+                                d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                            <path
+                                d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                        </svg>
+                    </span>
+                </div>
+                <div class="flex justify-between mb-1">
+                    <span>اجمالي المدفوع بعد السداد:</span>
+                    @if (paymentForm.get('amount')?.value == null || paymentForm.get('amount')?.value == 0 ) {
+                    <span> - </span>
+                    }
+                    @else {
+                    <span>{{ totalPaid + paymentForm.get('amount')?.value }}
+                        <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
+                            width="17" height="17" fill="currentColor" viewBox="0 0 1124.14 1256.39">
+                            <path
+                                d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                            <path
+                                d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                        </svg>
+                    </span>
+                    }
+                </div>
+                <!-- <div class="flex justify-between mb-1">
+                    <span>المتبقي الحالي:</span>
+                    <span>{{ remaining }} ر.س</span>
+                </div> -->
+                <div class="flex justify-between font-bold text-green-700">
+                    <span> المبلغ المتبقي بعد السداد:</span>
+                    @if (paymentForm.get('amount')?.value == null || paymentForm.get('amount')?.value == 0 ) {
+                    <span> - </span>
+                    }
+                    @else {
+                    <span>{{ remainingAfter | number: '1.2-2' }}
+                        <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
+                            width="17" height="17" fill="currentColor" viewBox="0 0 1124.14 1256.39">
+                            <path
+                                d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                            <path
+                                d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                        </svg>
+                    </span>
+                    }
+                </div>
+            </div>
+
+            <!-- زر سداد -->
+            <div class="flex justify-end paying-div">
+                <button type="submit"
+                    [disabled]="paymentForm.get('amount')?.value == null || paymentForm.get('amount')?.value == 0 "
+                    class="bg-green-600 text-white px-4 py-2 inline-block rounded hover:bg-green-700 transition">
+                    سداد
+                </button>
+            </div>
+        </form>
+        }
+
+
+    </div>
+</div>
+<!-- </body>
+    
+    </html> -->

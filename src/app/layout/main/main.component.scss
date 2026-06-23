@@ -1,0 +1,35 @@
+#main-content {
+    margin-right: 16rem;
+}
+
+@media print {
+    #main-content {
+        margin-right: 0;
+        padding: 0 !important;
+        margin: 0 !important;
+        padding-top: 0 !important;
+        padding-inline: 0 !important;
+    }
+
+}
+
+
+
+
+@media screen and (max-width: 1400px) {
+    #main-content {
+        margin-right: 13rem;
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    #main-content {
+        margin-right: 12rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #main-content {
+        margin-right: 10rem;
+    }
+}

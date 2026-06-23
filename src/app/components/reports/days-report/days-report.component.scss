@@ -1,0 +1,8 @@
+.vertical-text {
+    writing-mode: vertical-rl;
+    /* بيخلي النص عمودي */
+    transform: rotate(180deg);
+    /* عشان يخلي الكلمة تقرأ من فوق لتحت */
+    white-space: nowrap;
+    /* يمنع الكلمة من النزول لسطر تاني */
+}

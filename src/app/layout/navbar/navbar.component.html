@@ -1,0 +1,32 @@
+<nav class="fixed top-0 bg-white z-30 w-full border-b border-gray-200">
+    <div class="container py-3 flex justify-between items-center">
+        <div>
+            <!-- شعار أو اسم النظام -->
+            <span class="font-bold text-xl">Dmam Dashboard</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- @if (username) { -->
+            <span (click)="toggleUserMenu()"
+                class="text-base cursor-pointer font-semibold text-gray-700">مرحباً {{username}}
+            </span>
+            <!-- } -->
+            <div class="relative flex items-center gap-2">
+                <img src="media/user1.png" alt="User" class="w-10 h-10 main-radius cursor-pointer   object-cover"
+                    (click)="toggleUserMenu()">
+                @if (showUserMenu) {
+                <div
+                    class="absolute top-full left-0 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200">
+                    <button class="block w-full text-right px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        (click)="updatePassword()">
+                        تحديث كلمة المرور
+                    </button>
+                    <button class="block w-full text-right px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        (click)="logout()">
+                        تسجيل خروج
+                    </button>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,125 @@
+<section class="all_sec1">
+    <!-- <div class="all_table1 relative overflow-x-auto"> -->
+
+    <!-- التاريخ -->
+    <div class="flex justify-between items-center p-4">
+
+        <div class="">
+            <h2 class="text-5xl mb-3 font-semibold">اليوم</h2>
+            <p class="text-2xl text-gray-600">{{today_date}}
+                <span class="text-xl px-2">|</span>
+                {{today_time}}
+            </p>
+        </div>
+    </div>
+
+    <!-- كروت الإحصائيات -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 px-4">
+        <div class="bg-white rounded-2xl shadow p-7  flex flex-col  justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+            [routerLink]="['/clients']">
+            <p class="font-bold text-xl text-start md:mb-8 lg:mb-12 xl:mb-16  ">العملاء </p>
+            <div class="text-right flex justify-between gap-2 w-full">
+                <p class="font-bold text-xl md:p-3 lg:p-4 xl:p-6">{{client_count}}</p>
+                <i class="fa-solid fa-users bg-green-100 md:p-3 lg:p-4 xl:p-6 rounded-2xl text-green-500 text-3xl"></i>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-7 flex flex-col justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+            [routerLink]="['/trips']">
+            <p class="font-bold text-xl text-start md:mb-8 lg:mb-12 xl:mb-16  ">الرحلات</p>
+            <div class="text-right flex justify-between gap-2 w-full">
+                <p class="font-bold text-xl md:p-3 lg:p-4 xl:p-6">{{trip_count}}</p>
+                <i class="fa-solid fa-bus bg-red-100 md:p-3 lg:p-4 xl:p-6 rounded-2xl text-red-400 text-3xl"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-7 flex flex-col justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+            [routerLink]="['/hotels']">
+            <p class="font-bold text-xl text-start md:mb-8 lg:mb-12 xl:mb-16  ">الفنادق</p>
+            <div class="text-right flex justify-between gap-2 w-full">
+                <p class="font-bold text-xl md:p-3 lg:p-4 xl:p-6">{{hotel_count}}</p>
+                <i
+                    class="fa-solid fa-hotel bg-orange-100 md:p-3 lg:p-4 xl:p-6 rounded-2xl text-orange-400 text-3xl"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-7 flex flex-col justify-between hover:cursor-pointer hover:bg-white transition-all duration-300 hover:shadow-lg"
+            [routerLink]="['/reservations']">
+            <p class="font-bold text-xl text-start md:mb-8 lg:mb-12 xl:mb-16  ">الحجوزات</p>
+            <div class="text-right flex justify-between gap-2 w-full">
+                <p class="font-bold text-xl md:p-3 lg:p-4 xl:p-6"> {{reservation_count}}</p>
+                <i
+                    class="fa-solid fa-bag-shopping bg-yellow-100 md:p-3 lg:p-4 xl:p-6 rounded-2xl text-yellow-600 text-3xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- رسم بياني -->
+    <div class="p-4">
+        <div class="bg-white rounded-2xl shadow p-6">
+            <h3 class="text-center font-semibold text-lg mb-4 text-[#4d4c81]">احدث الرحلات التى تم انشائها</h3>
+            <div class="flex justify-center ">
+                <table class="w-full text-sm text-left rtl:text-right">
+                    <tbody>
+                        @for(trip of all_trips.slice(0, 3) ; track $index) {
+                        <tr class="crud_body_data border-t ">
+                            <td class="px-2 py-4 text-center">
+                                {{$index+1}}
+                            </td>
+                            <td class="px-2 py-4 text-center">
+                                كود :
+                                {{trip.tripCode}}
+                            </td>
+                            <td class="px-2 py-4 text-center">
+                                <span class=" min-w-28 inline-block font crud_body_secondry_color">
+                                    @if(trip.transitCity){
+                                    <span>{{trip.transitCity | enum : 'city'}} </span>
+                                    <i class="fa-solid fa-location-dot px-1"></i>
+                                    }
+                                    {{trip.toCity | enum :'city'}} </span>
+                                <!-- <i class="fa-solid fa-left-long pe-7"></i> -->
+                                <!-- <span>{{trip.toCity | enum : 'city'}} </span> -->
+                            </td>
+
+                            <td class="px-2 py-4 text-center">
+                                <span class="crud_body_secondry_color inline-block "> {{trip.departureTime | date}}
+                                </span>
+                                <span> <i class=" px-3 fa-solid fa-caret-left"></i> </span>
+                                <span> {{trip.returnTime | date }} </span>
+                            </td>
+                            <td class="px-2 py-4 text-center">
+                                {{ trip.departureReservedChairs ? (trip.numberOfChairs -
+                                trip.departureReservedChairs.split(",").length) : trip.numberOfChairs }}
+                                @if (trip.busType > 3 && trip.busType != 8) {
+                                <span class="p-1 rounded-md bg-slate-50 border-yellow-500 border" title="VIP">
+                                    <i class="fa-solid fa-crown" style="color: #fbc604;"></i>
+                                </span>
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+
+
+
+                @for (trip of all_trips; track $index) {
+                }
+
+
+
+
+
+
+
+
+            </div>
+
+            <div class="flex justify-around mt-4 text-sm text-gray-600">
+                <span>اجمالي عدد الرحلات: {{trip_count}}</span>
+                <span>اجمالي عدد الحجوزات: {{reservation_count}}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- </div> -->
+</section>

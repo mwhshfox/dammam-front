@@ -1,0 +1,78 @@
+<div class="all_table relative overflow-x-auto">
+
+    <form class="max-w-md mx-6 mb-10">
+        <!-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only">ابحث هنا ....</label> -->
+        <div class="relative">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                </svg>
+            </div>
+            <input type="search" id="default-search" class="crud_input block w-full p-4 ps-10"
+                placeholder="ابحث هنا ...." required />
+            <button type="submit" class="text-white absolute end-2.5 bottom-2.5 px-3 py-2 thirdry_bg rounded-xl"> بحث
+            </button>
+        </div>
+    </form>
+
+    <table class="w-full text-sm text-left rtl:text-right">
+        <thead class="crud_head_titles">
+            <tr>
+                @for(title of table_head_titles ; track $index) {
+                <th scope="col" class="px-6 py-3 ">
+                    {{title}}
+                </th>
+                }
+                <th scope="col" class="px-6 py-3 text-center">
+                    الاعدادات
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(admin of all_Admins ; track $index) {
+            <tr class="crud_body_data border-t">
+                <td class="px-6 py-4 crud_body_secondry_color ">
+                    ({{$index+1}})
+                </td>
+                <td class="px-6 py-4">
+                    {{admin.firstName + " " + admin.lastName}}
+                </td>
+                <td class="px-6 py-4 crud_body_secondry_color">
+                    {{admin.phoneNumber}}
+                </td>
+                <td class="px-6 py-4">
+                    {{admin.nationality | enum : "nationality"}}
+                </td>
+                <td class="px-6 py-4">
+                    {{admin.nationalityId}}
+                </td>
+                <td class="px-6 py-4">
+                    {{admin.code}}
+                </td>
+
+
+                <td class="px-6  py-4 flex items-center justify-center gap-4">
+                    <!-- <span class="crud_icon show_icon_color"><i class="fa-regular fa-eye"></i></span> -->
+
+                    <span [routerLink]="['../edit' ]" (click)="save_admin(admin)"
+                        class="crud_icon edit_icon_color show_icon_color">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </span>
+                    @if(can_change_password && admin.code != 'Admin-95112' && admin.code != 'Admin-10408'){
+                    <span (click)="update_user_pass(admin)" 
+                        class="crud_icon edit_icon_color show_icon_color">
+                        <i class="fa-solid fa-unlock-keyhole"></i>
+                    </span>
+                    }
+
+                    <!-- <span (click)="show_delete_alert( admin.fullName , admin.id)" class="crud_icon delete_icon_color">
+                        <i class="fa-solid fa-trash"></i>
+                    </span> -->
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

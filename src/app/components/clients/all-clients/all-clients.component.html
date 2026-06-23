@@ -1,0 +1,81 @@
+<div class="all_table relative overflow-x-auto">
+
+    <form class="max-w-md mx-6 mb-10 flex items-center gap-2">
+
+        <div class="relative flex items-center gap-2 w-full">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                </svg>
+            </div>
+            <input [(ngModel)]="searchInput" [ngModelOptions]="{standalone: true}" type="search" id="default-search"
+                class="crud_input block w-full p-4 ps-10" placeholder="ابحث بألاسم او الجوال او الهوية ...." required />
+            <button (click)="get_searched_client()" type="submit"
+                class="text-white absolute end-2.5 bottom-2.5 px-3 py-2 thirdry_bg rounded-xl"> بحث
+            </button>
+
+
+        </div>
+
+        @if(searchInput){
+        <button type="button" (click)="cancel_search()" class="text-white  px-3 py-2 main_bg rounded-xl">الغاء</button>
+        }
+    </form>
+
+    <table class="w-full text-sm text-left rtl:text-right">
+        <thead class="crud_head_titles">
+            <tr>
+                @for(title of table_head_titles ; track $index) {
+                <th scope="col" class="px-6 py-3 ">
+                    {{title}}
+                </th>
+                }
+                <th scope="col" class="px-6 py-3 text-center">
+                    الاعدادات
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(client of all_clients ; track $index) {
+            <tr class="crud_body_data border-t">
+                <td class="px-6 py-4 crud_body_secondry_color ">
+                    ({{$index+1}})
+                </td>
+                <td class="px-6 py-4">
+                    {{client.fullName}}
+                </td>
+                <td class="px-6 py-4 crud_body_secondry_color">
+                    {{client.phoneNumber}}
+                </td>
+                <td class="px-6 py-4">
+                    {{client.nationality | enum : "nationality"}}
+                </td>
+                <td class="px-6 py-4">
+                    {{client.nationalityId}}
+                </td>
+                <td class="px-6 py-4">
+                    <span
+                        [class]="client.isCompanion ? 'text-red-700 bg-red-100 rounded-lg px-2 py-1 w-16 inline-block text-center' : 'bg-gray-300 rounded-lg px-2 py-1 w-16 inline-block text-center'">
+                        {{client.isCompanion ? "مرافق" : "عميل"}}</span>
+                </td>
+
+
+
+                <td class="px-6  py-4 flex items-center justify-center gap-4">
+                    <!-- <span class="crud_icon edit_icon_color"><i class="fa-regular fa-eye"></i></span> -->
+
+                    <span [routerLink]="['../edit' ]" (click)="save_client(client)" class="crud_icon show_icon_color">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </span>
+                    
+                    <!-- <span (click)="show_delete_alert(client.fullName , client.id)"
+                        class="crud_icon delete_icon_color"><i class="fa-solid fa-trash"></i>
+                    </span> -->
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
